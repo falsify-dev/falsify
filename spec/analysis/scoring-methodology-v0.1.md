@@ -307,4 +307,4 @@ The 12-example exercise is reproducible: change any score, recompute the aggrega
 
 ---
 
-*Document drafted 2026-05-01 by Cüneyt Öztürk. Public review via GitHub Discussions on `sk8ordie84/falsify`. CC BY 4.0.*
+*Document drafted 2026-05-01 by Cüneyt Öztürk. Public review via GitHub Discussions on `falsify-dev/falsify`. CC BY 4.0.*

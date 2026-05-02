@@ -5,8 +5,8 @@
 // Reproduces all 12 PRML v0.1 conformance vectors byte-for-byte.
 //
 // Spec:    https://spec.falsify.dev/v0.1
-// Vectors: https://github.com/sk8ordie84/falsify/tree/main/spec/test-vectors
-// Python:  https://github.com/sk8ordie84/falsify (reference implementation)
+// Vectors: https://github.com/falsify-dev/falsify/tree/main/spec/test-vectors
+// Python:  https://github.com/falsify-dev/falsify (reference implementation)
 //
 // Usage:
 //   falsify-js init <name>                    create skeleton manifest

@@ -187,4 +187,4 @@ The right response to all three is the same: replace dependence on a reference *
 
 ---
 
-*Working draft v0.1, CC BY 4.0. Comments via [GitHub Discussions](https://github.com/sk8ordie84/falsify/discussions/6) or `hello@falsify.dev`.*
+*Working draft v0.1, CC BY 4.0. Comments via [GitHub Discussions](https://github.com/falsify-dev/falsify/discussions/6) or `hello@falsify.dev`.*
