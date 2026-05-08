@@ -184,7 +184,7 @@ Consume falsify's hooks from your own repo:
 ```yaml
 repos:
   - repo: https://github.com/falsify-dev/falsify
-    rev: v0.1.3
+    rev: v0.1.4
     hooks:
       - id: falsify-guard
       - id: falsify-doctor
