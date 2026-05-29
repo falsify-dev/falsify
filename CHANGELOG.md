@@ -147,7 +147,7 @@ Documentation, brand, and metadata refresh. No functional code changes.
 ### Changed
 
 - **Repository transferred** from `github.com/sk8ordie84/falsify` to `github.com/falsify-dev/falsify`. Old URLs 301-redirect to canonical; all in-source references (README, spec, test vectors, preprint .tex, Dockerfile, CITATION.cff, action workflows, package metadata) updated to the new canonical URL.
-- **Editor identity standardised** from `Cüneyt Öztürk` (hyphenated) to `Cüneyt Öztürk` (no hyphen) across spec, CHANGELOG, CITATION, generator footers, and live spec.falsify.dev hosting. Aligns with falsify.dev landing and commercial paperwork.
+- **Editor identity standardised** to `Cüneyt Öztürk` across spec, CHANGELOG, CITATION, generator footers, and live spec.falsify.dev hosting. Aligns with falsify.dev landing.
 - **Pre-commit hook reference** in README updated to `rev: v0.1.4`.
 
 ### Why this release
