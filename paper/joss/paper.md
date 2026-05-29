@@ -15,7 +15,7 @@ authors:
     corresponding: true
     affiliation: 1
 affiliations:
-  - name: Cüneyt Öztürk, Istanbul, Türkiye
+  - name: Independent researcher, Istanbul, Türkiye
     index: 1
 date: 18 May 2026
 bibliography: paper.bib

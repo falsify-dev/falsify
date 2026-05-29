@@ -30,7 +30,7 @@ pdflatex prml-v0.1-preprint.tex   # second pass for refs
 
 If no account: register at https://arxiv.org/user/register
 - Use email: `hello@falsify.dev` (matches paper correspondence)
-- Affiliation: `Cüneyt Öztürk`
+- Affiliation: `Independent`
 - ORCID optional but boosts credibility
 
 ### 2. Endorsement
@@ -68,7 +68,7 @@ arXiv requires endorsement for first-time submissions in cs.* categories.
 
 ## Fallback: real-name submission
 
-If Cüneyt Öztürk anonymous identity fails moderation:
+If the anonymous identity fails moderation:
 
 1. Re-edit `\author[1]{Cüneyt Öztürk}` → `\author[1]{Cüneyt Öztürk}`
 2. `\affil[1]{Independent...` → `\affil[1]{Cüneyt Öztürk, Independent. Correspondence: cuneytozturk84@gmail.com`
