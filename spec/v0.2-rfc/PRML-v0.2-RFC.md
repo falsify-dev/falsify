@@ -1,7 +1,7 @@
 # PRML v0.2 — RFC
 
 **Status:** Draft (open for community comment)
-**Editor:** Cüneyt Öztürk · Cüneyt Öztürk · hello@falsify.dev
+**Editor:** Cüneyt Öztürk · hello@falsify.dev
 **Comment window:** 2026-05-08 → 2026-05-22 (14 days)
 **Freeze date:** 2026-05-22, 23:59 UTC
 **Final draft expected:** 2026-05-29

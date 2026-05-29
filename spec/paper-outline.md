@@ -5,7 +5,7 @@
 - **Target venue (preprint):** arXiv `cs.CR` (primary) · `cs.LG` (cross) · `cs.SE` (cross)
 - **Target venue (peer review):** NeurIPS 2026 Workshop on Reproducibility and Reliability in ML *(ML Reproducibility Challenge associated)*; backup: ICLR 2027 Tiny Papers; backup: USENIX Security 2027 (short paper)
 - **Length:** 8 pages + references + appendix (NeurIPS workshop format)
-- **Authors:** Cüneyt Öztürk *(Independent)* — `hello@falsify.dev`
+- **Authors:** Cüneyt Öztürk — `hello@falsify.dev`
 - **Correspondence URL:** `https://spec.falsify.dev/v0.1`
 - **Code & data:** `https://github.com/falsify-dev/falsify` (MIT) · spec under CC BY 4.0
 - **Status:** Outline — to be expanded into full draft by 2026-05-22 (3-week window)

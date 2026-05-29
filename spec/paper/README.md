@@ -1,7 +1,7 @@
 # PRML v0.1 — arXiv Preprint
 
 **File:** `prml-v0.1-preprint.tex` (694 lines, ~12 page output)
-**Author:** Cüneyt Öztürk (Independent)
+**Author:** Cüneyt Öztürk
 **Target arXiv categories:** `cs.CR` (primary), `cs.CY` (cross), `cs.SE` (cross)
 
 ---
