@@ -65,7 +65,7 @@ The v0.1 spec hard-codes SHA-256. Post-quantum migration is named in §10.3 as f
 - `'sha3-256'` — for environments that want SHA-3 as a hedge
 - `'blake3'` — for high-throughput pipelines that need keyed hashing
 
-A verifier processes the manifest by running the named algorithm over the canonical bytes. The sidecar file format extends to `<digest hex> <space> <alg>`, e.g. `1a3466cc... sha-256`.
+A verifier processes the manifest by running the named algorithm over the canonical bytes. The sidecar file format extends to `<digest hex> <space> <alg>`, e.g. `47f9956b... sha-256`.
 
 ### 5. `tolerance` field
 
@@ -131,7 +131,7 @@ v0.1 ships twelve. v0.2 adds twelve more, targeting:
 
 v0.1 sidecar: single-line lowercase hex SHA-256.
 
-v0.2 sidecar: single line, `<digest hex> <space> <alg>`, e.g. `1a3466cc08ee... sha-256`. Backward-compatible with v0.1: a v0.1 verifier reading a v0.2 sidecar takes the first whitespace-delimited token as the digest and ignores the rest.
+v0.2 sidecar: single line, `<digest hex> <space> <alg>`, e.g. `47f9956b3b9c... sha-256`. Backward-compatible with v0.1: a v0.1 verifier reading a v0.2 sidecar takes the first whitespace-delimited token as the digest and ignores the rest.
 
 A new optional sidecar `<name>.prml.sig` carries the Ed25519 detached signature when `producer.tier == 'high-risk'`.
 

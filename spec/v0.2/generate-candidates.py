@@ -260,7 +260,7 @@ def to_repr(spec):
 
 # Compute canonical + hash for each vector. For TV-016 we need the chain.
 # First: compute TV-001's hash (known) and an intermediate amendment_1.
-TV001_HASH = "1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546"
+TV001_HASH = "47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466"
 
 # Synthesize amendment_1 (intermediate, not exported as a numbered TV)
 amendment_1_spec = {

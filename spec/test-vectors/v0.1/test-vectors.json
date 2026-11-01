@@ -20,7 +20,7 @@
       }
     },
     "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: imagenet-val-2012\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
-    "hash": "1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546"
+    "hash": "47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466"
   },
   {
     "id": "TV-002",
@@ -43,7 +43,7 @@
       "claim_id": "01900000-0000-7000-8000-000000000000"
     },
     "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: imagenet-val-2012\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
-    "hash": "1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546"
+    "hash": "47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466"
   },
   {
     "id": "TV-003",
@@ -66,7 +66,7 @@
       }
     },
     "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: imagenet-val-2012\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.86\nversion: prml/0.1\n",
-    "hash": "b96b5b8d613e29d8c28c1cf91c03821b02224c41188c6128743fa2d55639d4bb"
+    "hash": "80ad02f46894b2f11f55117ff73ec55015191d1d5b2c62988cff50e2aca2b13e"
   },
   {
     "id": "TV-004",
@@ -94,7 +94,7 @@
       }
     },
     "canonical": "claim_id: 01900000-0000-7000-8000-000000000001\ncomparator: '>='\ncreated_at: '2026-06-15T09:30:00Z'\ndataset:\n  hash: 9b9a7c5e7d6c5f4e3d2c1b0a9f8e7d6c5b4a3928171615141312111009080706\n  id: glue-mrpc\n  uri: https://gluebenchmark.com/tasks/mrpc\nmetric: f1\nmodel:\n  hash: 1f3c8a9d2b4e5c6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f\n  id: bert-base-uncased\nproducer:\n  id: falsify.dev\nseed: 1337\nthreshold: 0.78\nversion: prml/0.1\n",
-    "hash": "609308e259dc3e75909b6c81a6bf0230a34a0b9af6726e46675a66817a80d304"
+    "hash": "ebdf2be739cb4e721a5da0ebc160ea34575fc9661c3ffb5120ea3531f6266e39"
   },
   {
     "id": "TV-005",
@@ -186,7 +186,7 @@
       }
     },
     "canonical": "claim_id: 01900000-0000-7000-8000-000000000005\ncomparator: ==\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789\n  id: synth-100\nmetric: exact_match\nproducer:\n  id: falsify.dev\nseed: 7\nthreshold: 1.0\nversion: prml/0.1\n",
-    "hash": "fc2bf632dfb10bac8cf88b0c0756af2b53175c9b3078ae34aaf6ce63102c1b56"
+    "hash": "6e04d2217b3f93646cf9d8487e114fb7fcda17a5b8492c10fd4ed3ae6dbabec5"
   },
   {
     "id": "TV-009",
@@ -207,11 +207,11 @@
       "producer": {
         "id": "falsify.dev"
       },
-      "prior_hash": "1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546",
+      "prior_hash": "47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466",
       "notes": "Threshold raised after dataset re-curation found 12 mislabeled examples."
     },
-    "canonical": "claim_id: 01900000-0000-7000-8000-000000000006\ncomparator: '>='\ncreated_at: '2026-05-15T14:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: imagenet-val-2012\nmetric: accuracy\nnotes: Threshold raised after dataset re-curation found 12 mislabeled examples.\nprior_hash: 1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.87\nversion: prml/0.1\n",
-    "hash": "29c60f7ccfb1f12777127785be25e3b2ca121b9b85b020f7bbd8e89a65ff1a04"
+    "canonical": "claim_id: 01900000-0000-7000-8000-000000000006\ncomparator: '>='\ncreated_at: '2026-05-15T14:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: imagenet-val-2012\nmetric: accuracy\nnotes: Threshold raised after dataset re-curation found 12 mislabeled examples.\nprior_hash: 47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.87\nversion: prml/0.1\n",
+    "hash": "34b874058e48b7724378ed95188d4b5f23c599dc736a59f91bb5d491c498f551"
   },
   {
     "id": "TV-010",
@@ -285,7 +285,7 @@
       }
     },
     "canonical": "claim_id: 01900000-0000-7000-8000-000000000009\ncomparator: <=\ncreated_at: '2026-09-01T15:00:00Z'\ndataset:\n  hash: 9999888877776666555544443333222211110000aaaaffffeeeeddddccccbbbb\n  id: boston-housing\nmetric: mae\nproducer:\n  id: falsify.dev\nseed: 1\nthreshold: 2.5\nversion: prml/0.1\n",
-    "hash": "ec1d18427451f0bd7886c6ac4027f07a779f899035c27ea52cb2765212866424"
+    "hash": "1bad72e08ca9107dbddced9be177fafb8b16c7eecc9423c051e66f990ff2b699"
   },
   {
     "id": "TV-013",

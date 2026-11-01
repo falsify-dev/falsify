@@ -23,18 +23,18 @@ Implementations in languages other than Python (Rust, Go, TypeScript, etc.) MUST
 
 | ID | Title | Hash (first 12 chars) |
 |---|---|---|
-| `TV-001` | Minimal valid manifest | `1a3466cc08ee` |
-| `TV-002` | Key ordering — random insertion order | `1a3466cc08ee` |
-| `TV-003` | Threshold mutation — single field change | `b96b5b8d613e` |
-| `TV-004` | Optional fields — model and dataset.uri populated | `609308e259dc` |
+| `TV-001` | Minimal valid manifest | `47f9956b3b9c` |
+| `TV-002` | Key ordering — random insertion order | `47f9956b3b9c` |
+| `TV-003` | Threshold mutation — single field change | `80ad02f46894` |
+| `TV-004` | Optional fields — model and dataset.uri populated | `ebdf2be739cb` |
 | `TV-005` | Unicode in producer.id | `6cf48a868f8f` |
 | `TV-006` | Maximum seed value | `57c71c567e0c` |
 | `TV-007` | Minimum seed value | `766d6ca6ee06` |
-| `TV-008` | Equality comparator | `fc2bf632dfb1` |
-| `TV-009` | Amendment manifest with prior_hash | `29c60f7ccfb1` |
+| `TV-008` | Equality comparator | `6e04d2217b3f` |
+| `TV-009` | Amendment manifest with prior_hash | `34b874058e48` |
 | `TV-010` | pass@k metric for code generation | `60f8eb35dd21` |
 | `TV-011` | AUROC with low threshold | `91104f15ee95` |
-| `TV-012` | MAE for regression | `ec1d18427451` |
+| `TV-012` | MAE for regression | `1bad72e08ca9` |
 | `TV-013` | Integer-valued threshold | `cb9683ce70f5` |
 
 ---
@@ -80,7 +80,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546
+47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466
 ```
 
 ---
@@ -126,7 +126,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546
+47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466
 ```
 
 ---
@@ -172,7 +172,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-b96b5b8d613e29d8c28c1cf91c03821b02224c41188c6128743fa2d55639d4bb
+80ad02f46894b2f11f55117ff73ec55015191d1d5b2c62988cff50e2aca2b13e
 ```
 
 ---
@@ -226,7 +226,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-609308e259dc3e75909b6c81a6bf0230a34a0b9af6726e46675a66817a80d304
+ebdf2be739cb4e721a5da0ebc160ea34575fc9661c3ffb5120ea3531f6266e39
 ```
 
 ---
@@ -410,7 +410,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-fc2bf632dfb10bac8cf88b0c0756af2b53175c9b3078ae34aaf6ce63102c1b56
+6e04d2217b3f93646cf9d8487e114fb7fcda17a5b8492c10fd4ed3ae6dbabec5
 ```
 
 ---
@@ -434,7 +434,7 @@ dataset:
 seed: 42
 producer:
   id: falsify.dev
-prior_hash: 1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546
+prior_hash: 47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466
 notes: Threshold raised after dataset re-curation found 12 mislabeled examples.
 ```
 
@@ -449,7 +449,7 @@ dataset:
   id: imagenet-val-2012
 metric: accuracy
 notes: Threshold raised after dataset re-curation found 12 mislabeled examples.
-prior_hash: 1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546
+prior_hash: 47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466
 producer:
   id: falsify.dev
 seed: 42
@@ -460,7 +460,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-29c60f7ccfb1f12777127785be25e3b2ca121b9b85b020f7bbd8e89a65ff1a04
+34b874058e48b7724378ed95188d4b5f23c599dc736a59f91bb5d491c498f551
 ```
 
 ---
@@ -606,7 +606,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-ec1d18427451f0bd7886c6ac4027f07a779f899035c27ea52cb2765212866424
+1bad72e08ca9107dbddced9be177fafb8b16c7eecc9423c051e66f990ff2b699
 ```
 
 ---

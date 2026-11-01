@@ -38,7 +38,7 @@ hashed and anchored exactly like a manifest.
 
 ```yaml
 version: prml-profile/0
-subject: 1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546
+subject: 47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466
 framework:
   id: NIST AI RMF 1.0
   uri: https://doi.org/10.6028/NIST.AI.100-1

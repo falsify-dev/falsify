@@ -6,6 +6,15 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed
+- **Conformance test fixtures: `producer.id` is now `falsify.dev`.** Every
+  v0.1, v0.2, edge, reject and candidate vector (and the generators and tests
+  that build them) used a former organisation domain as the producer id. The
+  expected canonical bytes and SHA-256 digests were regenerated with the
+  reference generators and checked across all four implementations (13 + 8
+  positive, 92 edge, 20 reject). Canonicalization rules and vector counts are
+  unchanged. New TV-001 digest: `47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466`.
+
 ## [0.5.2] — 2026-10-31
 
 ### Fixed

@@ -6,7 +6,7 @@ dataset:
   id: imagenet-val-2012
 metric: accuracy
 notes: Threshold raised after dataset re-curation found 12 mislabeled examples.
-prior_hash: 1a3466cc08ee7fb60a726ea1c4db6ecf48a9f847b9b7523bfb54b2ffaefee546
+prior_hash: 47f9956b3b9c495b3bf03b67398f54d0aa2133a2faf9b0522a9efa90bb109466
 producer:
   id: falsify.dev
 seed: 42

@@ -27,9 +27,9 @@ Any divergence between implementations on these vectors is a new portability fin
 | ID | Title | Hash (first 12) |
 |---|---|---|
 | `TV-013` | CJK Unicode in producer.id | `9e7096024ebb` |
-| `TV-014` | Long notes field with multiple paragraphs | `e1c442fda6fc` |
-| `TV-015` | All optional fields populated | `7d50bbac9c49` |
-| `TV-016` | Amendment chain length 3 (second amendment) | `0f758e839683` |
+| `TV-014` | Long notes field with multiple paragraphs | `3ee5e915084b` |
+| `TV-015` | All optional fields populated | `8d2efef0130c` |
+| `TV-016` | Amendment chain length 3 (second amendment) | `79189be21ede` |
 | `TV-017` | Strict less-than comparator with regression metric | `3b7bbabc4392` |
 | `TV-018` | Small-magnitude float threshold | `ff56657bd0d1` |
 
@@ -129,7 +129,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-e1c442fda6fcc17881369da71b522f405a8679d887dbe88cdd495f45f5423b5e
+3ee5e915084bf9eb9cba5a1df25438bab04dc1f7303d9684eb2b4c1864dd60f9
 ```
 
 ---
@@ -189,7 +189,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-7d50bbac9c49306b5a8c5bd1ebb5052e30fcf16d52ec38470dfb8610c1c9d5e4
+8d2efef0130ca27732fe74c26be9d77f158e3c6ae54df34e9dc301775f597f31
 ```
 
 ---
@@ -239,7 +239,7 @@ version: prml/0.1
 **Expected hash (lowercase hex SHA-256 of canonical bytes):**
 
 ```
-0f758e839683768fde1995463cd31c05c3e42343b8e289c57b5914154e6fe092
+79189be21ede143f0f7e52359bb793ee0d4913907f5112dbd34f7f561b3cf92b
 ```
 
 **Intermediate amendment_1 in the chain (not a TV in itself):**
