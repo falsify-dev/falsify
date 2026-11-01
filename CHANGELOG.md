@@ -6,7 +6,11 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.5.3] — 2026-11-02
+
 ### Changed
+- **Repository links** in package metadata, README, CITATION and docs point to the
+  `falsify-dev` GitHub organisation. No behaviour change.
 - **Conformance test fixtures: `producer.id` is now `falsify.dev`.** Every
   v0.1, v0.2, edge, reject and candidate vector (and the generators and tests
   that build them) used a former organisation domain as the producer id. The
