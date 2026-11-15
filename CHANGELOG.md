@@ -10,8 +10,8 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ### Added
 - **Conformance vectors for the erratum of 2026-11-15**: edge suite EV-093..EV-108
-  (92 → 108) and reject suite RJ-021..RJ-040 (20 → 40, 16 of them YAML-only), one
-  input per rule. A reject vector's `expect` may now list several accepted
+  (92 → 108) and reject suite RJ-021..RJ-040 (20 → 40; the new 20 are 12 YAML and
+  8 JSON, so 16 of the 40 are YAML-only), one input per rule. A reject vector's `expect` may now list several accepted
   substrings. No existing vector changed.
 
 ### Fixed
