@@ -87,7 +87,8 @@ them departed from the grammar. They were corrected the same day; the one
 input that exposed an unstated rule rather than a bug (a v0.2 `threshold`
 spelled `1300.0`) was settled by a post-freeze clarification to the v0.2 RFC
 the same day — `threshold` canonicalizes by value under v0.2. All of it now
-runs in CI as a 92-vector edge suite (`spec/test-vectors/edge/`).
+runs in CI as an edge suite (`spec/test-vectors/edge/`, 108 vectors since the
+erratum of 2026-11-15).
 
 **Implementation status.** All four reference implementations were written by the
 editor, and all public registry records to date originate with the editor. No
@@ -466,7 +467,7 @@ day by a post-freeze clarification to the v0.2 RFC: under `prml/0.2`,
 `threshold` canonicalizes **by value**, an integral value below 2^53 as an
 integer and anything else as a float (C6). All 83 inputs plus ten vectors
 pinning that rule's boundaries now form the **edge suite**
-([`spec/test-vectors/edge/`](test-vectors/edge/), 92 vectors), which the
+([`spec/test-vectors/edge/`](test-vectors/edge/), 108 vectors), which the
 multi-language CI runs for all four implementations alongside Appendix B.
 
 An implementer starting from this specification alone should begin with

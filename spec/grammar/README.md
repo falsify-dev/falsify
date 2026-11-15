@@ -164,7 +164,7 @@ CI has been green. Four classes:
 from the exponent, and the registry's `canonical.js` was corrected in step.
 After correction: Python 83/83, Go 83/83, Rust 83/83, JavaScript 82/83 — and,
 once class D was settled by the RFC clarification later the same day, 83/83 in
-all four. The inputs were promoted to `spec/test-vectors/edge/` (92 vectors with
+all four. The inputs were promoted to `spec/test-vectors/edge/` (then 92 vectors, with
 the ten boundary vectors for the new rule) and run in CI for all four. `candidate-vectors-2026-09-13.json` is kept as the dated
 **pre-correction** snapshot; its `implementation_status_2026_09_13` field is
 what was measured before the fix, not the current state.
@@ -174,8 +174,9 @@ the distinction the old C6 made, and the v0.2 RFC had never stated the rule the
 vectors encoded. It was settled the same day, by value (RFC "Post-freeze
 clarification", C6 above): Python, Go and Rust changed for `1300.0` inputs, no
 published digest changed, and ten boundary vectors (EV-083..EV-092) were added
-to the edge suite, which now has 92 vectors and passes in all four
-implementations and the registry. `candidate-vectors-2026-09-13.json` keeps the
+to the edge suite, which then had 92 vectors and passed in all four
+implementations and the registry. The erratum of 2026-11-15 added EV-093..EV-108;
+all 108 pass in all four implementations, the registry and `check_grammar.py`. `candidate-vectors-2026-09-13.json` keeps the
 pre-decision measurement in `implementation_status_2026_09_13`; its expected
 bytes for CV-V2b were updated to the decided rule (see its `note`).
 

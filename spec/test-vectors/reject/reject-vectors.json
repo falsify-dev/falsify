@@ -401,5 +401,222 @@
     "expect": "not in Unicode NFC",
     "ext": "json",
     "raw": "{\n  \"version\": \"prml/0.1\",\n  \"claim_id\": \"01900000-0000-7000-8000-000000000000\",\n  \"created_at\": \"2026-05-01T12:00:00Z\",\n  \"metric\": \"accuracy\",\n  \"comparator\": \">=\",\n  \"threshold\": 0.85,\n  \"dataset\": {\n    \"id\": \"imagenet-val-2012\",\n    \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"\n  },\n  \"seed\": 42,\n  \"producer\": {\n    \"id\": \"Öztürk\"\n  }\n}\n"
+  },
+  {
+    "id": "RJ-021",
+    "title": "Y-reject-number-spelling-010",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: 010\n"
+  },
+  {
+    "id": "RJ-022",
+    "title": "Y-reject-number-spelling-0x1F",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: 0x1F\n"
+  },
+  {
+    "id": "RJ-023",
+    "title": "Y-reject-number-spelling-0o17",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: 0o17\n"
+  },
+  {
+    "id": "RJ-024",
+    "title": "Y-reject-number-spelling-1_000",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: 1_000\n"
+  },
+  {
+    "id": "RJ-025",
+    "title": "Y-reject-number-spelling-1:30",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: 1:30\n"
+  },
+  {
+    "id": "RJ-026",
+    "title": "Y-reject-number-spelling-.5",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: .5\n"
+  },
+  {
+    "id": "RJ-027",
+    "title": "Y-reject-number-spelling-5.",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: 5.\n"
+  },
+  {
+    "id": "RJ-028",
+    "title": "Y-reject-number-spelling-+1",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "not a JSON number spelling",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: +1\n"
+  },
+  {
+    "id": "RJ-029",
+    "title": "Y-reject-unquoted-timestamp",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "unquoted timestamp",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: 2026-05-01T12:00:00Z\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\n"
+  },
+  {
+    "id": "RJ-030",
+    "title": "Y-reject-unquoted-date",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": "unquoted timestamp",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  d: 2026-05-01\n"
+  },
+  {
+    "id": "RJ-031",
+    "title": "Y-reject-binary-tag",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.1.",
+    "field": "-",
+    "expect": [
+      "could not determine a constructor",
+      "unknown tag",
+      "binary"
+    ],
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: !!binary aGk=\n"
+  },
+  {
+    "id": "RJ-032",
+    "title": "Y-reject-non-finite",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.5.",
+    "field": "-",
+    "expect": "number is not a finite float64",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  k: .inf\n"
+  },
+  {
+    "id": "RJ-033",
+    "title": "J-reject-non-finite",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.5.",
+    "field": "-",
+    "expect": "number is not a finite float64",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"metric_args\": {\"k\": 1e999}, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-034",
+    "title": "J-reject-seed-negative",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 2.1.",
+    "field": "-",
+    "expect": "non-negative 64-bit integer",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": -1, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-035",
+    "title": "J-reject-seed-2^64",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 2.1.",
+    "field": "-",
+    "expect": "non-negative 64-bit integer",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 18446744073709551616, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-036",
+    "title": "J-reject-seed-float",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 2.1.",
+    "field": "-",
+    "expect": "seed must be an integer or null",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42.0, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-037",
+    "title": "J-reject-nested-sequence",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 5.",
+    "field": "-",
+    "expect": "a sequence inside a sequence",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"metric_args\": {\"m\": [[1, 2]]}}"
+  },
+  {
+    "id": "RJ-038",
+    "title": "J-reject-depth-101",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 5.",
+    "field": "-",
+    "expect": [
+      "nesting too deep",
+      "nesting deeper than"
+    ],
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"metric_args\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": {\"a\": 1}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-039",
+    "title": "J-reject-lone-surrogate",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule 3.4.",
+    "field": "-",
+    "expect": [
+      "control / non-portable character",
+      "lone surrogate",
+      "surrogate",
+      "hex escape"
+    ],
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\ud800b\", \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-040",
+    "title": "J-reject-trailing-content",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15, rule RFC 8259.",
+    "field": "-",
+    "expect": [
+      "Extra data",
+      "after JSON",
+      "after the JSON value",
+      "trailing characters"
+    ],
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}} {\"x\": 1}"
   }
 ]

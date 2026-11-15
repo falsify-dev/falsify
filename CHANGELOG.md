@@ -6,6 +6,14 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-11-15
+
+### Added
+- **Conformance vectors for the erratum of 2026-11-15**: edge suite EV-093..EV-108
+  (92 → 108) and reject suite RJ-021..RJ-040 (20 → 40, 16 of them YAML-only), one
+  input per rule. A reject vector's `expect` may now list several accepted
+  substrings. No existing vector changed.
+
 ### Fixed
 - **Mapping keys in `impl/js`, `impl/go` and `impl/rust`** now follow the §3.6 C5
   plain-scalar rule, as the grammar and the Python reference already did: a key that

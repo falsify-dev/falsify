@@ -1,4 +1,4 @@
-# Edge suite — §3.6 grammar edge cases (92 vectors)
+# Edge suite — §3.6 grammar edge cases (108 vectors)
 
 **Added 2026-09-13.** Same file format as `../v0.1/test-vectors.json` (`id`,
 `title`, `description`, `input`, `canonical`, `hash`); every reference
@@ -24,10 +24,16 @@ suite can grow as the grammar exposes more edges without renumbering Appendix B.
 - 10 (EV-083..EV-092) pin the **v0.2 `threshold` by-value rule** decided on
   2026-09-13: `1300.0`→`1300`, `-0.0`→`0`, `2.0`→`2`, `2^53-1`→integer,
   `2^53`→`9007199254740992.0`, `1e16` and `10000000000000000`→`1.0e+16`,
-  `1300.5`, `0`, `1e-05`→`1.0e-05`.
+  `1300.5`, `0`, `1e-05`→`1.0e-05`;
+- 16 (EV-093..EV-108, added 2026-11-15) give one input per rule of the PRML
+  v0.1 erratum of 2026-11-15: empty mapping and sequence (C8), the tie rule
+  (C4), negative zero, numbers kept by spelling or read by value (C6), the
+  largest `seed`, strings starting `---` or `...`, long and empty keys,
+  `constructor`-family keys, and code-point key order. The input is embedded
+  exactly as written, because its spelling is part of the case.
 
 Expected bytes and hashes are those of the reference canonicalizer and of the
-from-grammar emitter `spec/grammar/check_grammar.py`, which agree on all 92.
+from-grammar emitter `spec/grammar/check_grammar.py`, which agree on all 108.
 
 ## The case that was a decision, not a bug
 

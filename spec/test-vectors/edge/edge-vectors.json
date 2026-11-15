@@ -2268,5 +2268,149 @@
   },
   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: imagenet-val-2012\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 1.0e-05\nversion: prml/0.2\n",
   "hash": "d0ce7278dbe0ecadc3dfb767233666eca700b3fa7215a01e9df61d48e7600ed1"
- }
+ },
+{
+ "id": "EV-093",
+ "source": "erratum-2026-11-15",
+ "title": "C8-empty-mapping",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C8. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args: {}\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "0e33c745c5a82121a2141bdc36692016c77a25c11c1412c8e6d2ded366546e09"
+},
+{
+ "id": "EV-094",
+ "source": "erratum-2026-11-15",
+ "title": "C8-empty-sequence",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C8. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"labels": []}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  labels: []\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "aaf6252a16bd2dfac8c1a4cd03aa0fb726e31eb7d1052111f4948d8cdc7771b2"
+},
+{
+ "id": "EV-095",
+ "source": "erratum-2026-11-15",
+ "title": "C8-empty-mapping-in-sequence",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C8. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"items": [{}, {"a": 1}]}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  items:\n  - {}\n  - a: 1\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "f7c8261c62c10b4357c7918f833d80663b1819bdbc69808846008b5d0cebcd1a"
+},
+{
+ "id": "EV-096",
+ "source": "erratum-2026-11-15",
+ "title": "C4-tie-even-digit",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C4. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 87320258963721.625, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 87320258963721.62\nversion: prml/0.1\n",
+ "hash": "9abc1ffbb7aefff149db5d92a45a635114c3628eecff4a3055a432778da50bcb"
+},
+{
+ "id": "EV-097",
+ "source": "erratum-2026-11-15",
+ "title": "C4-negative-zero-float",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C4. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": -0.0, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: -0.0\nversion: prml/0.1\n",
+ "hash": "c22bc4e0d2313d8256ba91d9cace9b07201a8227b4ff2b26a92207bac006c5d8"
+},
+{
+ "id": "EV-098",
+ "source": "erratum-2026-11-15",
+ "title": "C4-negative-zero-integer",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C4. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": -0, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.0\nversion: prml/0.1\n",
+ "hash": "944676321a641a960b8051c40d71455d0d8d77a636fd2fc219efa6bf633dfa02"
+},
+{
+ "id": "EV-099",
+ "source": "erratum-2026-11-15",
+ "title": "C6-float-spelling-kept",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C6. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "metric_args": {"temperature": 1.0, "k": 1, "big": 1e20, "z": -0.0}, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  big: 1.0e+20\n  k: 1\n  temperature: 1.0\n  z: -0.0\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "1211d119d13c8d9b92708a355b577df41836d22981c86011e059a1b9600bfeee"
+},
+{
+ "id": "EV-100",
+ "source": "erratum-2026-11-15",
+ "title": "C6-number-by-value",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C6. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "metric_args": {"a": 0.50, "b": 85e-2, "c": 1E5}, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  a: 0.5\n  b: 0.85\n  c: 100000.0\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "45e4db2f0d72f7c7422174f6a3f855766ca81f2492f325cefd5bd20da68fb1c0"
+},
+{
+ "id": "EV-101",
+ "source": "erratum-2026-11-15",
+ "title": "C6-integer-beyond-2^64",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C6. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "metric_args": {"k": 18446744073709551617}, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  k: 18446744073709551617\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "0a5a0a66768c483d1ff723481326a5dd61c76d54e660f73a733986f73aceb96a"
+},
+{
+ "id": "EV-102",
+ "source": "erratum-2026-11-15",
+ "title": "C6-seed-max",
+ "description": "PRML v0.1 erratum 2026-11-15, rule 2.1. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 18446744073709551615, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 18446744073709551615\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "a64be00a2e25b528e6d860b212814c85bc7aad6609a9ac84c32dae0c8db4dea0"
+},
+{
+ "id": "EV-103",
+ "source": "erratum-2026-11-15",
+ "title": "C5-document-marker-prefix",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C5. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "notes": "...more to follow", "metric_args": {"---a": "---x"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  ---a: ---x\nnotes: ...more to follow\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "0d80282abfb05dd90892917f6e35fa975fd463e470fb3ba52a39ab02b3bf69f8"
+},
+{
+ "id": "EV-104",
+ "source": "erratum-2026-11-15",
+ "title": "C5-long-key",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C5. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk": 1}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk: 1\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "61b3dfae9d9a64fc558e7cd769f25aeccb46d7a980f4f0e8034d583dace00f97"
+},
+{
+ "id": "EV-105",
+ "source": "erratum-2026-11-15",
+ "title": "C5-empty-key",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C5. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"": 1}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  '': 1\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "5be0578be0a65e9d4c9d8f25a3ad1aa11097dd8b4080ab5c41d14b0f9f3a0840"
+},
+{
+ "id": "EV-106",
+ "source": "erratum-2026-11-15",
+ "title": "S-constructor-family-keys",
+ "description": "PRML v0.1 erratum 2026-11-15, rule 5. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"constructor": 1, "prototype": 2, "__proto__": 3}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  __proto__: 3\n  constructor: 1\n  prototype: 2\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "ccf3623c395eff90f45741fe043447878af4de7253132209125f260f20a97561"
+},
+{
+ "id": "EV-107",
+ "source": "erratum-2026-11-15",
+ "title": "S-strings-in-array-are-not-keys",
+ "description": "PRML v0.1 erratum 2026-11-15, rule 3.2.1. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"l": ["a", "b", "b"], "b": 1}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  b: 1\n  l:\n  - a\n  - b\n  - b\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "a396c1ebebef0d1a98b44ba269a07622451c6f4c6b12c2dd2fe8f220a1007ca6"
+},
+{
+ "id": "EV-108",
+ "source": "erratum-2026-11-15",
+ "title": "S-key-order-code-point",
+ "description": "PRML v0.1 erratum 2026-11-15, rule C2. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"～": 1, "😀": 2}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  ～: 1\n  😀: 2\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "1ccc3940055991bafa5a3454731f16cebdd514bab92068ba6a9d99f9033b683e"
+}
 ]

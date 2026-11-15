@@ -56,13 +56,13 @@ All files live under `spec/test-vectors/` in the repository and are served from
 |---|---|---|---|
 | v0.1 normative | `v0.1/test-vectors.json` | 13 | your `canonical` bytes and `hash` equal the published ones, for every entry |
 | v0.2 candidate | `v0.2/test-vectors.json` | 8 | same |
-| §3.6 edge suite | `edge/edge-vectors.json` | 92 | same — these are the inputs at the edges of C4/C5/C6 on which three references were once wrong |
-| reject suite | `reject/reject-vectors.json` + `reject/check_reject.py` | 20 | you refuse each one **for its stated reason** with exit code 2 (16 if you read JSON only; the four YAML-only cases are declared `SKIP`, not silently passed) |
+| §3.6 edge suite | `edge/edge-vectors.json` | 108 | same — these are the inputs at the edges of C4/C5/C6 on which three references were once wrong, and (EV-093..EV-108) one case per rule of the erratum of 2026-11-15 |
+| reject suite | `reject/reject-vectors.json` + `reject/check_reject.py` | 40 | you refuse each one **for its stated reason** with exit code 2 (24 if you read JSON only; the 16 YAML-only cases are declared `SKIP`, not silently passed) |
 
 Every positive vector has the same shape: `id`, `title`, `description`, `input`
 (the manifest as a JSON object), `canonical` (the expected bytes), `hash`.
 
-The from-grammar reference `grammar/check_grammar.py` reproduces all 113 positive
+The from-grammar reference `grammar/check_grammar.py` reproduces all 129 positive
 vectors without using any YAML library; reading it is a faster way into C4–C6 than
 reading the references.
 
@@ -87,7 +87,7 @@ reason; a crash is not a refusal.
 ## What "conformant" means here
 
 An implementation is **PRML 0.1 conformant** as a canonicalizer when it reproduces
-all 13 + 8 + 92 positive vectors byte-for-byte with matching hashes and rejects the
+all 13 + 8 + 108 positive vectors byte-for-byte with matching hashes and rejects the
 reject suite as above. It is conformant as a verifier when, in addition, it
 implements §5 (comparators, tolerance) and the §7 exit codes. We have no third
 category and no partial credit; if a suite is not run, say which.
