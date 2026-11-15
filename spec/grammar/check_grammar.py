@@ -179,13 +179,19 @@ def emit(manifest: dict) -> str:
             raise ValueError("duplicate key (C3)")
         for k in sorted(keys):                                 # C2
             v = m[k]
-            if isinstance(v, dict):
+            if isinstance(v, dict) and not v:
+                out.append(f"{pad}{render_string(k)}: {{}}")                  # C8
+            elif isinstance(v, list) and not v:
+                out.append(f"{pad}{render_string(k)}: []")                    # C8
+            elif isinstance(v, dict):
                 out.append(f"{pad}{render_string(k)}:")
                 walk(v, depth + 1)
             elif isinstance(v, list):
                 out.append(f"{pad}{render_string(k)}:")
                 for item in v:
-                    if isinstance(item, dict):
+                    if isinstance(item, dict) and not item:
+                        out.append(f"{pad}- {{}}")                             # C8
+                    elif isinstance(item, dict):
                         sub: list[str] = []
                         _walk_into(sub, item, depth + 1, k, version)
                         first = sub[0][len(pad) + 2:]
@@ -284,8 +290,9 @@ def recognize(text: str) -> dict:
             raise GrammarError(f"odd indentation: {ln!r}")
         depth = indent // 2
         if stripped.startswith("- "):
-            # informative sequence item: accept scalar items only in the recogniser
-            _check_scalar(stripped[2:], "", version)
+            # informative sequence item: accept scalar items (and C8 `{}`) only in the recogniser
+            if stripped[2:] != "{}":
+                _check_scalar(stripped[2:], "", version)
             continue
         m = re.match(r"^(.+?):( (.*))?$", stripped)
         if not m:
@@ -315,7 +322,8 @@ def recognize(text: str) -> dict:
         if has_value:
             if val_tok == "":
                 raise GrammarError(f"empty value after ': ' : {ln!r}")
-            _check_scalar(val_tok, key_text if depth == 0 else "", version)
+            if val_tok not in ("{}", "[]"):                                    # C8
+                _check_scalar(val_tok, key_text if depth == 0 else "", version)
         prev_depth = depth
     return {"lines": len(lines), "version": version}
 

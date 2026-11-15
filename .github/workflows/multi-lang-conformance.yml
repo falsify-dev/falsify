@@ -152,6 +152,15 @@ jobs:
       - name: Negative conformance — reject suite (20 reject-vectors MUST be rejected)
         run: python3 spec/test-vectors/reject/check_reject.py -- node impl/js/falsify.js lock
 
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Erratum 2026-11-15 regression cases (shared fixture, checked against Python)
+        run: |
+          pip install pyyaml
+          python3 -m unittest tests.test_erratum_2026_11_15 -v
+
   go-conformance:
     name: Go (impl/go)
     runs-on: ubuntu-latest
@@ -178,6 +187,15 @@ jobs:
 
       - name: Negative conformance — reject suite (16 JSON reject-vectors; 4 YAML skipped)
         run: python3 spec/test-vectors/reject/check_reject.py --reads json -- ./impl/go/falsify-go hash
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Erratum 2026-11-15 regression cases (shared fixture, checked against Python)
+        run: |
+          pip install pyyaml
+          python3 -m unittest tests.test_erratum_2026_11_15 -v
 
   rust-conformance:
     name: Rust (impl/rust)
@@ -215,6 +233,15 @@ jobs:
 
       - name: Negative conformance — reject suite (16 JSON reject-vectors; 4 YAML skipped)
         run: python3 spec/test-vectors/reject/check_reject.py --reads json -- ./impl/rust/target/release/falsify-rs hash
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      - name: Erratum 2026-11-15 regression cases (shared fixture, checked against Python)
+        run: |
+          pip install pyyaml
+          python3 -m unittest tests.test_erratum_2026_11_15 -v
 
   conformance-summary:
     name: All four implementations agree

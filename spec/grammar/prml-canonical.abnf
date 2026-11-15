@@ -30,16 +30,16 @@ canonical-manifest = mapping-0
    ; C3 (uniqueness): no two entries of one mapping have the same key (§3.2.1).
 
 mapping-0 = 1*entry-0
-entry-0   = key ":" ( SP scalar LF / LF mapping-1 / LF sequence-0 )
+entry-0   = key ":" ( SP value LF / LF mapping-1 / LF sequence-0 )
 
 mapping-1 = 1*entry-1
-entry-1   = 2SP key ":" ( SP scalar LF / LF mapping-2 / LF sequence-1 )
+entry-1   = 2SP key ":" ( SP value LF / LF mapping-2 / LF sequence-1 )
 
 mapping-2 = 1*entry-2
-entry-2   = 4SP key ":" ( SP scalar LF / LF mapping-3 / LF sequence-2 )
+entry-2   = 4SP key ":" ( SP value LF / LF mapping-3 / LF sequence-2 )
 
 mapping-3 = 1*entry-3
-entry-3   = 6SP key ":" ( SP scalar LF / LF mapping-4 / LF sequence-3 )
+entry-3   = 6SP key ":" ( SP value LF / LF mapping-4 / LF sequence-3 )
    ; and so on: entry-N = (2*N)SP key ":" ( ... mapping-(N+1) / sequence-N )
 
 ; ---------------------------------------------------------------------------
@@ -49,26 +49,32 @@ entry-3   = 6SP key ":" ( SP scalar LF / LF mapping-4 / LF sequence-3 )
 ; ---------------------------------------------------------------------------
 
 sequence-0 = 1*item-0
-item-0     = "-" SP ( scalar LF / seq-mapping-1 )
+item-0     = "-" SP ( scalar LF / empty-mapping LF / seq-mapping-1 )
    ; A sequence is "indentless": its "-" lines start at the SAME indentation
    ; as the parent key. A mapping inside an item puts its first entry on the
    ; "-" line and continues with entries indented two spaces deeper than the "-".
-seq-mapping-1 = key ":" SP scalar LF *entry-1
+seq-mapping-1 = key ":" SP value LF *entry-1
 
 sequence-1 = 1*item-1
-item-1     = 2SP "-" SP ( scalar LF / seq-mapping-2 )
-seq-mapping-2 = key ":" SP scalar LF *entry-2
+item-1     = 2SP "-" SP ( scalar LF / empty-mapping LF / seq-mapping-2 )
+seq-mapping-2 = key ":" SP value LF *entry-2
 
 sequence-2 = 1*item-2
-item-2     = 4SP "-" SP ( scalar LF / seq-mapping-3 )
-seq-mapping-3 = key ":" SP scalar LF *entry-3
+item-2     = 4SP "-" SP ( scalar LF / empty-mapping LF / seq-mapping-3 )
+seq-mapping-3 = key ":" SP value LF *entry-3
 
 sequence-3 = 1*item-3
-item-3     = 6SP "-" SP scalar LF
+item-3     = 6SP "-" SP ( scalar LF / empty-mapping LF )
 
 ; ---------------------------------------------------------------------------
 ; Keys and scalars
 ; ---------------------------------------------------------------------------
+
+value  = scalar / empty-mapping / empty-sequence
+   ; C8 (2026-11-15): an empty mapping or sequence has these flow forms; a
+   ; sequence directly inside a sequence has no production.
+empty-mapping  = "{}"
+empty-sequence = "[]"
 
 key    = string
    ; Every key in every v0.1 and v0.2 schema field is a plain identifier
@@ -101,6 +107,8 @@ float   = [ "-" ] ( float-decimal / float-exp )
    ; float-exp always carries a "." in the mantissa (so 1e-05 renders as
    ; 1.0e-05, not 1e-05), always carries an explicit exponent sign, and pads
    ; the exponent to at least two digits (e-05, e+16, e-324, e+308).
+   ; When two shortest digit strings are equally close to the value, the one
+   ; whose last digit is even is used (stated 2026-11-15).
    ; Non-finite values have no production: they are prohibited (§3.5).
 float-decimal = ( "0" / nz-digit *DIGIT ) "." 1*DIGIT
 float-exp     = DIGIT "." 1*DIGIT %s"e" ( "+" / "-" ) 2*DIGIT

@@ -390,6 +390,7 @@ code points:
 - U+007F (DELETE) and U+0080–U+009F (C1 control characters)
 - U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR)
 - U+FEFF (BYTE ORDER MARK / ZERO WIDTH NO-BREAK SPACE)
+- U+D800–U+DFFF (lone surrogates; erratum 2026-11-15)
 
 These code points serialize ambiguously or invisibly and would let two
 visually identical manifests hash differently. A manifest containing any of
@@ -434,11 +435,11 @@ vectors, one of them does not (finding of 2026-09-13).
 
 The canonical byte sequence is specified by the ABNF grammar in
 [`spec/grammar/prml-canonical.abnf`](grammar/prml-canonical.abnf) together with
-the constraints C1–C7 stated in [`spec/grammar/README.md`](grammar/README.md):
+the constraints C1–C8 stated in [`spec/grammar/README.md`](grammar/README.md):
 depth (C1), key order (C2), uniqueness (C3), float rendering (C4), the
-plain-scalar predicate (C5), which production a value takes (C6), and block
-sequences (C7, informative). The grammar and constraints C1–C6 are
-**normative**. The reference canonicalizer is one conforming implementation of
+plain-scalar predicate (C5), which production a value takes (C6), block
+sequences (C7, informative) and empty collections (C8, erratum 2026-11-15). The
+grammar and constraints C1–C6 and C8 are **normative**. The reference canonicalizer is one conforming implementation of
 them, not their definition. An implementation that satisfies the grammar and
 C1–C6 produces, for every conformance vector in Appendix B, exactly the
 published canonical bytes and hash.
@@ -921,6 +922,50 @@ Conformance is enforceable via the falsify reference test suite
 > the meantime, when testing began, or whether that version was followed. Both
 > sentences now say so. No normative text, canonical byte, digest or validation
 > rule changes.
+
+> **v0.1 erratum (2026-11-15): input reading and two canonical forms,
+> TECHNICAL.** A differential review of the four reference implementations found
+> inputs, none covered by a conformance vector, on which they read or render the
+> same manifest differently. The rules below close those gaps. No published
+> vector, canonical byte or digest in Appendix B or the edge suite changes. Where
+> an implementation departed from a rule it now conforms, and its bytes change for
+> the affected inputs only.
+>
+> 1. **Numbers in YAML input (§3.1).** A plain scalar is a number only when it is
+>    spelled exactly as a JSON number (RFC 8259 §6): an integer spelling is an
+>    integer, a spelling with a fraction or an exponent is a float64; `.inf` and
+>    `.nan` read as floats and are then rejected (item 3). Any other plain scalar
+>    that YAML 1.1 or YAML 1.2 types as a number — `010`, `0x1F`, `0o17`,
+>    `1_000`, `1:30`, `.5`, `5.`, `+1` — MUST be rejected with exit `2`, because
+>    YAML readers disagree on its value. Quoted, any of them is a string.
+> 2. **Unquoted timestamps (§3.1).** A plain scalar that YAML 1.1 reads as a
+>    timestamp (`2026-05-01`, `2026-05-01T12:00:00Z`) MUST be rejected with exit
+>    `2`; quoted, it is a string. `created_at` was already required to be an
+>    RFC 3339 string.
+> 3. **Non-finite numbers anywhere (§3.5).** The rule for `threshold` now applies
+>    to every number in the manifest: infinity and NaN have no canonical form and
+>    MUST be rejected with exit `2`.
+> 4. **`seed` range (§2.1).** `seed` MUST be an integer in [0, 2^64-1]; a
+>    negative or larger value MUST be rejected with exit `2`.
+> 5. **Structure.** A sequence directly inside a sequence has no canonical form
+>    and MUST be rejected. A manifest MUST NOT nest mappings and sequences more
+>    than 100 levels deep (the root mapping is level 1). Keys named
+>    `constructor`, `prototype` and `__proto__` are ordinary keys.
+> 6. **Lone surrogates (§3.4).** A string or key containing a code point in
+>    U+D800–U+DFFF (possible through a JSON `\uD800` escape) has no UTF-8 encoding
+>    and MUST be rejected with exit `2`.
+> 7. **Empty mapping and empty sequence (§3.6, grammar C8).** The grammar had no
+>    production for them. An empty mapping renders `{}` and an empty sequence `[]`
+>    after `key: `, and an empty mapping as a sequence item renders `- {}`, as the
+>    Python reference already wrote them.
+> 8. **Ties in shortest round-trip digits (§3.6, grammar C4).** When two digit
+>    strings of the shortest length are equally close to the value, the one whose
+>    last digit is even is used (`87320258963721.625` renders
+>    `87320258963721.62`), as Python, JavaScript and Go already did.
+>
+> Unchanged: negative zero renders `-0.0` (C4); a string beginning `---` or
+> `...` renders by the plain-scalar predicate (C5), so `notes: ...more` is plain.
+> The Python reference now follows both where it had departed.
 
 ---
 

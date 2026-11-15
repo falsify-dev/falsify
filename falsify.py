@@ -25,6 +25,30 @@ from typing import Any, Callable
 
 import yaml
 
+
+class _UniqueKeySafeLoader(yaml.SafeLoader):
+    """SafeLoader that rejects a repeated mapping key. PyYAML keeps the last
+    value, so the spec a reader sees and the spec the lock hashes could differ."""
+
+    def construct_mapping(self, node, deep=False):
+        seen = set()
+        for key_node, _ in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            try:
+                dup = key in seen
+            except TypeError:  # unhashable key: the base class reports it
+                continue
+            if dup:
+                raise yaml.constructor.ConstructorError(
+                    "while constructing a mapping", node.start_mark,
+                    f"duplicate key {key!r}", key_node.start_mark)
+            seen.add(key)
+        return super().construct_mapping(node, deep=deep)
+
+
+def _load_spec_yaml(text):
+    return yaml.load(text, Loader=_UniqueKeySafeLoader)  # nosec B506 (SafeLoader subclass)
+
 __version__ = "0.5.3"
 
 EXIT_PASS = 0
@@ -708,7 +732,7 @@ def cmd_lock(args: argparse.Namespace) -> int:
 
     try:
         raw_text = spec_path.read_text()
-        spec = yaml.safe_load(raw_text)
+        spec = _load_spec_yaml(raw_text)
     except yaml.YAMLError as e:
         print(f"falsify lock: failed to parse {spec_path}: {e}", file=sys.stderr)
         return EXIT_BAD_SPEC
@@ -823,8 +847,8 @@ def _diff_file_vs_file(path_a: Path, path_b: Path) -> int:
             print(f"falsify diff: {p} not found", file=sys.stderr)
             return EXIT_BAD_SPEC
     try:
-        spec_a = yaml.safe_load(path_a.read_text())
-        spec_b = yaml.safe_load(path_b.read_text())
+        spec_a = _load_spec_yaml(path_a.read_text())
+        spec_b = _load_spec_yaml(path_b.read_text())
     except yaml.YAMLError as e:
         print(f"falsify diff: YAML parse error: {e}", file=sys.stderr)
         return EXIT_BAD_SPEC
@@ -876,7 +900,7 @@ def _diff_lock_vs_file(name: str) -> int:
     )
 
     try:
-        current_spec = yaml.safe_load(spec_path.read_text())
+        current_spec = _load_spec_yaml(spec_path.read_text())
     except yaml.YAMLError as e:
         print(f"falsify diff: failed to parse {spec_path}: {e}", file=sys.stderr)
         return EXIT_BAD_SPEC
@@ -948,7 +972,7 @@ def _load_locked_spec(
         return None, None, f"{spec_path} not found."
 
     try:
-        spec = yaml.safe_load(spec_path.read_text())
+        spec = _load_spec_yaml(spec_path.read_text())
     except yaml.YAMLError as e:
         return None, None, f"failed to parse {spec_path}: {e}"
     try:
@@ -1200,7 +1224,7 @@ def cmd_replay(args: argparse.Namespace) -> int:
             print(f"falsify replay: {msg}", file=sys.stderr)
         return EXIT_BAD_SPEC
     try:
-        current_spec = yaml.safe_load(spec_path.read_text())
+        current_spec = _load_spec_yaml(spec_path.read_text())
     except yaml.YAMLError as e:
         if use_json:
             print(json.dumps(
@@ -1343,7 +1367,7 @@ def cmd_verdict(args: argparse.Namespace) -> int:
         return EXIT_BAD_SPEC
 
     try:
-        spec = yaml.safe_load(spec_path.read_text())
+        spec = _load_spec_yaml(spec_path.read_text())
     except yaml.YAMLError as e:
         print(f"falsify verdict: failed to parse {spec_path}: {e}", file=sys.stderr)
         return EXIT_BAD_SPEC
@@ -1489,7 +1513,7 @@ def _derive_claim_state(claim_dir: Path) -> tuple[str, dict | None]:
         return "UNLOCKED", None
 
     try:
-        spec = yaml.safe_load(spec_path.read_text())
+        spec = _load_spec_yaml(spec_path.read_text())
         current_hash = hashlib.sha256(
             _canonicalize(spec).encode("utf-8")
         ).hexdigest()
@@ -1520,7 +1544,7 @@ def _derive_claim_state(claim_dir: Path) -> tuple[str, dict | None]:
 def _read_claim_text(claim_dir: Path) -> str | None:
     spec_path = claim_dir / "spec.yaml"
     try:
-        spec = yaml.safe_load(spec_path.read_text())
+        spec = _load_spec_yaml(spec_path.read_text())
     except (yaml.YAMLError, OSError):
         return None
     if isinstance(spec, dict):
@@ -2263,7 +2287,7 @@ def _export_records_for_spec(
     if lock_path.exists() and spec_path.exists():
         try:
             lock_data = json.loads(lock_path.read_text())
-            spec = yaml.safe_load(spec_path.read_text())
+            spec = _load_spec_yaml(spec_path.read_text())
         except (yaml.YAMLError, OSError, json.JSONDecodeError):
             spec = None
             lock_data = None
@@ -3243,7 +3267,7 @@ def _compute_why(name: str) -> dict:
     state, verdict_data = _derive_claim_state(claim_dir)
 
     try:
-        spec = yaml.safe_load(spec_path.read_text())
+        spec = _load_spec_yaml(spec_path.read_text())
     except (yaml.YAMLError, OSError):
         spec = None
 
@@ -3478,7 +3502,7 @@ def _doctor_spec_checks() -> list[dict]:
         verdict_path = claim_dir / "verdict.json"
 
         try:
-            spec = yaml.safe_load(spec_path.read_text())
+            spec = _load_spec_yaml(spec_path.read_text())
         except (yaml.YAMLError, OSError) as e:
             out.append({
                 "level": "FAIL",

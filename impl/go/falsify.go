@@ -31,7 +31,9 @@ import (
 	"strings"
 
 	"golang.org/x/text/unicode/norm"
+	"io"
 	"math"
+	"unicode/utf8"
 )
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -143,8 +145,8 @@ func floatFieldsFor(version string) map[string]bool {
 // pythonReprFloat renders a float64 per §3.6 constraint C4 from its VALUE:
 // shortest round-trip digits; decimal form for -4 <= e < 16, exponent form
 // otherwise, with a "." always in the mantissa, an explicit exponent sign and
-// at least two exponent digits. (renderNumber, below, works from the raw JSON
-// text and assumes it is already the shortest spelling — README gap G5.)
+// at least two exponent digits. renderNumber, below, uses it for every decimal
+// or exponent spelling.
 func pythonReprFloat(f float64) string {
 	if f == 0 {
 		if math.Signbit(f) {
@@ -201,26 +203,28 @@ func renderThresholdV02(n json.Number) (string, bool) {
 	return pythonReprFloat(f), true
 }
 
-func renderNumber(n json.Number, field string, floatFields map[string]bool) string {
+// renderNumber renders a number from its VALUE, not its JSON spelling (§C4/§C6):
+// 0.50, 5e-1 and 0.5 are one manifest with one hash. An integer spelling (no
+// '.', no exponent) stays an exact integer, at any magnitude, unless the field is
+// float-typed under this version (v0.1 `threshold`); every other spelling is read
+// as a float64 and rendered by §C4. A number that overflows float64 has no
+// canonical form and is an error.
+func renderNumber(n json.Number, field string, floatFields map[string]bool) (string, error) {
 	s := string(n)
-	if !floatFields[field] {
-		return s
-	}
-	eIdx := strings.IndexAny(s, "eE")
-	if eIdx < 0 {
-		// No exponent.
-		if !strings.Contains(s, ".") {
-			return s + ".0"
+	if !strings.ContainsAny(s, ".eE") && !floatFields[field] {
+		if s == "-0" {
+			return "0", nil // an integer has no negative zero
 		}
-		return s
+		return s, nil
 	}
-	// Has exponent: ensure mantissa has a decimal place.
-	mantissa := s[:eIdx]
-	exponent := s[eIdx:]
-	if !strings.Contains(mantissa, ".") {
-		return mantissa + ".0" + exponent
+	f, err := strconv.ParseFloat(s, 64)
+	if err != nil || math.IsInf(f, 0) || math.IsNaN(f) {
+		return "", fmt.Errorf("number %s is not a finite float64", s)
 	}
-	return s
+	if f == 0 && !strings.ContainsAny(s, ".eE") {
+		f = 0 // integer spelling "-0": the integer 0, so the float 0.0
+	}
+	return pythonReprFloat(f), nil
 }
 
 // renderScalar emits the canonical form of a non-collection value.
@@ -235,7 +239,7 @@ func renderScalar(v interface{}, field string, floatFields map[string]bool) (str
 		}
 		return "false", nil
 	case json.Number:
-		return renderNumber(x, field, floatFields), nil
+		return renderNumber(x, field, floatFields)
 	case string:
 		if needsQuoting(x) {
 			return quoteSingle(x), nil
@@ -265,18 +269,37 @@ func renderMappingV(m map[string]interface{}, indent int, floatFields map[string
 	var lines []string
 	for _, k := range keys {
 		v := m[k]
+		// §C5 applies to keys as well as values (spec/grammar/README.md): a key
+		// that is not a plain scalar renders single-quoted, as a value would.
+		rk := k
+		if needsQuoting(k) {
+			rk = quoteSingle(k)
+		}
 		switch sub := v.(type) {
 		case map[string]interface{}:
-			lines = append(lines, fmt.Sprintf("%s%s:", pad, k))
+			// §C8: an empty mapping renders `{}` and an empty sequence `[]`.
+			if len(sub) == 0 {
+				lines = append(lines, fmt.Sprintf("%s%s: {}", pad, rk))
+				continue
+			}
+			lines = append(lines, fmt.Sprintf("%s%s:", pad, rk))
 			nested, err := renderMappingV(sub, indent+2, floatFields, version)
 			if err != nil {
 				return "", err
 			}
 			lines = append(lines, nested)
 		case []interface{}:
-			lines = append(lines, fmt.Sprintf("%s%s:", pad, k))
+			if len(sub) == 0 {
+				lines = append(lines, fmt.Sprintf("%s%s: []", pad, rk))
+				continue
+			}
+			lines = append(lines, fmt.Sprintf("%s%s:", pad, rk))
 			for _, item := range sub {
 				if itemMap, ok := item.(map[string]interface{}); ok {
+					if len(itemMap) == 0 {
+						lines = append(lines, fmt.Sprintf("%s- {}", pad))
+						continue
+					}
 					nested, err := renderMappingV(itemMap, indent+2, floatFields, version)
 					if err != nil {
 						return "", err
@@ -297,7 +320,7 @@ func renderMappingV(m map[string]interface{}, indent int, floatFields map[string
 			if indent == 0 && k == "threshold" && version == "prml/0.2" {
 				if n, ok := v.(json.Number); ok {
 					if r, ok2 := renderThresholdV02(n); ok2 {
-						lines = append(lines, fmt.Sprintf("%s%s: %s", pad, k, r))
+						lines = append(lines, fmt.Sprintf("%s%s: %s", pad, rk, r))
 						continue
 					}
 				}
@@ -306,7 +329,7 @@ func renderMappingV(m map[string]interface{}, indent int, floatFields map[string
 			if err != nil {
 				return "", err
 			}
-			lines = append(lines, fmt.Sprintf("%s%s: %s", pad, k, rendered))
+			lines = append(lines, fmt.Sprintf("%s%s: %s", pad, rk, rendered))
 		}
 	}
 	return strings.Join(lines, "\n"), nil
@@ -603,7 +626,9 @@ func validateManifest(m map[string]interface{}) []string {
 	if v, _ := m["version"].(string); v != "prml/0.1" && v != "prml/0.2" {
 		errs = append(errs, fmt.Sprintf("version must be \"prml/0.1\" or \"prml/0.2\", got \"%v\"", m["version"]))
 	}
-	if _, ok := m["threshold"].(json.Number); !ok {
+	if tn, ok := m["threshold"].(json.Number); !ok {
+		errs = append(errs, "threshold must be a finite number")
+	} else if f, err := strconv.ParseFloat(string(tn), 64); err != nil || math.IsInf(f, 0) || math.IsNaN(f) {
 		errs = append(errs, "threshold must be a finite number")
 	}
 	if c, ok := m["comparator"].(string); ok && c != "" && !validComparators[c] {
@@ -653,13 +678,11 @@ func schemaConformanceErrors(m map[string]interface{}) []string {
 	if seed, present := m["seed"]; present && seed != nil {
 		if n, ok := seed.(json.Number); !ok {
 			errs = append(errs, "seed must be an integer or null")
-		} else if _, err := n.Int64(); err != nil {
-			// arbitrary-precision uint64 seeds still parse via big int path in hashing;
-			// accept anything without a decimal point / exponent
-			sTok := n.String()
-			if strings.ContainsAny(sTok, ".eE") {
-				errs = append(errs, "seed must be an integer or null")
-			}
+		} else if strings.ContainsAny(n.String(), ".eE") {
+			errs = append(errs, "seed must be an integer or null")
+		} else if _, err := strconv.ParseUint(n.String(), 10, 64); err != nil && n.String() != "-0" {
+			// §2.1: a non-negative 64-bit integer.
+			errs = append(errs, "seed must be a non-negative 64-bit integer (0 to 2^64-1)")
 		}
 	}
 	if ds, ok := m["dataset"].(map[string]interface{}); ok {
@@ -697,6 +720,47 @@ func schemaConformanceErrors(m map[string]interface{}) []string {
 			errs = append(errs, k+": unknown top-level field (schema additionalProperties: false)")
 		}
 	}
+	errs = append(errs, structuralErrors(m, "", 1, false)...)
+	return errs
+}
+
+// maxDepth bounds the nesting of mappings and sequences; the root is level 1.
+const maxDepth = 100
+
+// structuralErrors reports values with no canonical form wherever they sit: a
+// number that is not a finite float64 (the root threshold has its own message),
+// a sequence directly inside a sequence, and nesting deeper than maxDepth.
+func structuralErrors(v interface{}, path string, depth int, inSeq bool) []string {
+	var errs []string
+	switch x := v.(type) {
+	case json.Number:
+		if path != "threshold" && strings.ContainsAny(string(x), ".eE") {
+			if f, err := strconv.ParseFloat(string(x), 64); err != nil || math.IsInf(f, 0) || math.IsNaN(f) {
+				errs = append(errs, path+": number is not a finite float64")
+			}
+		}
+	case map[string]interface{}:
+		if depth > maxDepth {
+			return []string{fmt.Sprintf("%s: nesting deeper than %d levels", path, maxDepth)}
+		}
+		for k, c := range x {
+			child := k
+			if path != "" {
+				child = path + "." + k
+			}
+			errs = append(errs, structuralErrors(c, child, depth+1, false)...)
+		}
+	case []interface{}:
+		if depth > maxDepth {
+			return []string{fmt.Sprintf("%s: nesting deeper than %d levels", path, maxDepth)}
+		}
+		if inSeq {
+			errs = append(errs, path+": a sequence inside a sequence has no canonical form")
+		}
+		for i, c := range x {
+			errs = append(errs, structuralErrors(c, fmt.Sprintf("%s[%d]", path, i), depth+1, true)...)
+		}
+	}
 	return errs
 }
 
@@ -704,52 +768,130 @@ func schemaConformanceErrors(m map[string]interface{}) []string {
 // encoding/json is silently last-wins, so without this the manifest a human reads
 // and the manifest the hash binds can differ with no diagnostic — a tamper channel
 // inside a tamper-evident format. RFC 7493 (I-JSON) §2.3 prohibits duplicate names.
+//
+// Each open container is a stack frame: a name set for an object, nil for an
+// array. A string inside an array is never a name (an array such as
+// ["a","b","b"] is not a duplicate key).
 func duplicateNameErr(data []byte) error {
 	dec := json.NewDecoder(strings.NewReader(string(data)))
 	dec.UseNumber()
-	// One `seen` set per open object, pushed and popped as the token stream
-	// descends and ascends.
-	var stack []map[string]bool
-	expectName := false
+	type frame struct {
+		seen       map[string]bool // nil for an array
+		expectName bool
+	}
+	var stack []*frame
 	for {
 		tok, err := dec.Token()
 		if err != nil {
 			return nil // malformed JSON is reported by the real decode, not here
 		}
+		var top *frame
+		if len(stack) > 0 {
+			top = stack[len(stack)-1]
+		}
 		switch t := tok.(type) {
 		case json.Delim:
 			switch t {
 			case '{':
-				stack = append(stack, map[string]bool{})
-				expectName = true
-			case '}':
-				stack = stack[:len(stack)-1]
-				expectName = len(stack) > 0
+				stack = append(stack, &frame{seen: map[string]bool{}, expectName: true})
 			case '[':
-				expectName = false
-			case ']':
-				expectName = len(stack) > 0
+				stack = append(stack, &frame{})
+			case '}', ']':
+				stack = stack[:len(stack)-1]
+				if len(stack) > 0 && stack[len(stack)-1].seen != nil {
+					stack[len(stack)-1].expectName = true
+				}
 			}
 		case string:
-			if expectName && len(stack) > 0 {
-				top := stack[len(stack)-1]
-				if top[t] {
+			if top != nil && top.seen != nil && top.expectName {
+				if top.seen[t] {
 					return fmt.Errorf("duplicate key %q — a PRML manifest MUST NOT repeat a key", t)
 				}
-				top[t] = true
-				expectName = false
+				top.seen[t] = true
+				top.expectName = false
 				continue
 			}
-			expectName = len(stack) > 0
+			if top != nil && top.seen != nil {
+				top.expectName = true
+			}
 		default:
-			expectName = len(stack) > 0
+			if top != nil && top.seen != nil {
+				top.expectName = true
+			}
 		}
 	}
+}
+
+// strictJSON rejects three inputs encoding/json tolerates: invalid UTF-8
+// (replaced by U+FFFD), a lone surrogate escape such as "\ud800" (replaced by
+// U+FFFD) and content after the first JSON value (ignored). The other
+// implementations reject all three.
+func strictJSON(data []byte) error {
+	if !utf8.Valid(data) {
+		return fmt.Errorf("input is not valid UTF-8")
+	}
+	inStr := false
+	for i := 0; i < len(data); i++ {
+		c := data[i]
+		if !inStr {
+			if c == '"' {
+				inStr = true
+			}
+			continue
+		}
+		if c == '"' {
+			inStr = false
+			continue
+		}
+		if c != '\\' || i+1 >= len(data) {
+			continue
+		}
+		if data[i+1] != 'u' || i+5 >= len(data) {
+			i++
+			continue
+		}
+		cp, err := strconv.ParseUint(string(data[i+2:i+6]), 16, 32)
+		if err != nil {
+			i++
+			continue
+		}
+		if cp >= 0xD800 && cp <= 0xDBFF { // a high surrogate must be followed by a low one
+			ok := false
+			if i+11 < len(data) && data[i+6] == '\\' && data[i+7] == 'u' {
+				if lo, err2 := strconv.ParseUint(string(data[i+8:i+12]), 16, 32); err2 == nil && lo >= 0xDC00 && lo <= 0xDFFF {
+					ok = true
+				}
+			}
+			if !ok {
+				return fmt.Errorf("lone surrogate escape in string")
+			}
+			i += 11
+			continue
+		}
+		if cp >= 0xDC00 && cp <= 0xDFFF {
+			return fmt.Errorf("lone surrogate escape in string")
+		}
+		i += 5
+	}
+	dec := json.NewDecoder(strings.NewReader(string(data)))
+	dec.UseNumber()
+	var first interface{}
+	if err := dec.Decode(&first); err != nil {
+		return nil // malformed JSON is reported by the real decode, not here
+	}
+	if _, err := dec.Token(); err != io.EOF {
+		return fmt.Errorf("unexpected content after the JSON value")
+	}
+	return nil
 }
 
 func cmdHash(specPath string) int {
 	data, err := os.ReadFile(specPath)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "hash: %v\n", err)
+		return exitBad
+	}
+	if err := strictJSON(data); err != nil {
 		fmt.Fprintf(os.Stderr, "hash: %v\n", err)
 		return exitBad
 	}
@@ -783,6 +925,10 @@ func cmdHash(specPath string) int {
 func cmdVerify(specPath, observedStr string) int {
 	data, err := os.ReadFile(specPath)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "verify: %v\n", err)
+		return exitBad
+	}
+	if err := strictJSON(data); err != nil {
 		fmt.Fprintf(os.Stderr, "verify: %v\n", err)
 		return exitBad
 	}

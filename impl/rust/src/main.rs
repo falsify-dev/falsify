@@ -132,11 +132,27 @@ fn render_float(x: f64) -> String {
     if x == 0.0 {
         return if x.is_sign_negative() { "-0.0".to_string() } else { "0.0".to_string() };
     }
-    let s = format!("{:e}", x);
-    let (mant, exp) = s.split_once('e').expect("exponent form");
-    let e: i32 = exp.parse().expect("exponent");
-    let neg = mant.starts_with('-');
-    let digits: String = mant.chars().filter(|c| c.is_ascii_digit()).collect();
+    // Shortest round-trip digits; when two candidates are equally close the one
+    // with the even last digit is chosen (§C4), as Python's repr does. Rust's
+    // `{:e}` rounds such ties up, so zmij supplies the digits.
+    let neg = x.is_sign_negative();
+    let mut zbuf = zmij::Buffer::new();
+    let zs = zbuf.format_finite(x.abs()).to_string();
+    let (mant, exp10) = match zs.split_once('e') {
+        Some((m, ex)) => (m.to_string(), ex.parse::<i32>().expect("exponent")),
+        None => (zs.clone(), 0),
+    };
+    let (int_part, frac_part) = match mant.split_once('.') {
+        Some((i, f)) => (i.to_string(), f.to_string()),
+        None => (mant.clone(), String::new()),
+    };
+    let all = format!("{}{}", int_part, frac_part);
+    let lead = all.len() - all.trim_start_matches('0').len();
+    let mut digits: String = all.trim_start_matches('0').trim_end_matches('0').to_string();
+    if digits.is_empty() {
+        digits.push('0');
+    }
+    let e: i32 = exp10 + int_part.len() as i32 - 1 - lead as i32;
     let sign = if neg { "-" } else { "" };
     if (-4..16).contains(&e) {
         if e >= 0 {
@@ -185,7 +201,8 @@ fn render_scalar(v: &Value, field: &str, version: &str) -> String {
                 s.clone()
             }
         }
-        _ => panic!("render_scalar called on non-scalar"),
+        // validate_manifest rejects a sequence inside a sequence before rendering.
+        _ => "null".to_string(),
     }
 }
 
@@ -207,13 +224,18 @@ fn render_number(n: &Number, field: &str, version: &str) -> String {
     // C6: a float-typed value renders as float wherever it sits; an integer
     // renders as integer unless the field is float-typed under this version
     // (v0.1 `threshold`), in which case it is a float64 and renders as one.
+    // With `arbitrary_precision` a Number keeps its source text, so an integer
+    // beyond the u64/i64 range stays exact.
     if n.is_f64() {
         return render_float(n.as_f64().expect("f64"));
     }
     if is_float_field(field, version) {
-        return render_float(n.as_f64().unwrap_or(0.0));
+        // An integer spelling is an integer value, which has no negative zero.
+        let f = n.as_f64().unwrap_or(0.0);
+        return render_float(if f == 0.0 { 0.0 } else { f });
     }
-    n.to_string()
+    let s = n.to_string();
+    if s == "-0" { "0".to_string() } else { s }
 }
 
 // Sort the keys of a serde_json::Map alphabetically by traversing it
@@ -229,21 +251,37 @@ fn render_mapping(map: &serde_json::Map<String, Value>, indent: usize, version: 
     let mut lines: Vec<String> = Vec::with_capacity(map.len());
     for k in sorted_keys(map) {
         let v = &map[k];
+        // §C5 applies to keys as well as values (spec/grammar/README.md): a key
+        // that is not a plain scalar renders single-quoted, as a value would.
+        let rk: String = if needs_quoting(k) { quote_single(k) } else { k.clone() };
         if indent == 0 && k == "threshold" && version == "prml/0.2" {
             if let Value::Number(n) = v {
-                lines.push(format!("{}{}: {}", pad, k, render_threshold_v02(n)));
+                lines.push(format!("{}{}: {}", pad, rk, render_threshold_v02(n)));
                 continue;
             }
         }
         match v {
             Value::Object(sub) => {
-                lines.push(format!("{}{}:", pad, k));
+                // §C8: an empty mapping renders `{}` and an empty sequence `[]`.
+                if sub.is_empty() {
+                    lines.push(format!("{}{}: {{}}", pad, rk));
+                    continue;
+                }
+                lines.push(format!("{}{}:", pad, rk));
                 lines.push(render_mapping(sub, indent + 2, version));
             }
             Value::Array(items) => {
-                lines.push(format!("{}{}:", pad, k));
+                if items.is_empty() {
+                    lines.push(format!("{}{}: []", pad, rk));
+                    continue;
+                }
+                lines.push(format!("{}{}:", pad, rk));
                 for item in items {
                     if let Value::Object(sub) = item {
+                        if sub.is_empty() {
+                            lines.push(format!("{}- {{}}", pad));
+                            continue;
+                        }
                         let nested = render_mapping(sub, indent + 2, version);
                         let pad_nested = " ".repeat(indent + 2);
                         let mut nested_lines: Vec<String> =
@@ -262,7 +300,7 @@ fn render_mapping(map: &serde_json::Map<String, Value>, indent: usize, version: 
                 }
             }
             _ => {
-                lines.push(format!("{}{}: {}", pad, k, render_scalar(v, k, version)));
+                lines.push(format!("{}{}: {}", pad, rk, render_scalar(v, k, version)));
             }
         }
     }
@@ -499,15 +537,18 @@ fn non_nfc_fields(v: &Value, path: &str) -> Vec<String> {
 // channel inside a tamper-evident format. RFC 7493 (I-JSON) §2.3 prohibits them.
 fn duplicate_name_err(raw: &str) -> Option<String> {
     let b: Vec<char> = raw.chars().collect();
-    let mut stack: Vec<std::collections::HashSet<String>> = Vec::new();
+    // Some(name set) for an object, None for an array: a string inside an
+    // array is never a name (["a","b","b"] is not a duplicate key).
+    let mut stack: Vec<Option<std::collections::HashSet<String>>> = Vec::new();
     let mut expect_name = false;
     let mut i = 0usize;
     while i < b.len() {
         match b[i] {
-            '{' => { stack.push(std::collections::HashSet::new()); expect_name = true; i += 1; }
+            '{' => { stack.push(Some(std::collections::HashSet::new())); expect_name = true; i += 1; }
             '}' => { stack.pop(); expect_name = false; i += 1; }
-            '[' | ']' => { expect_name = false; i += 1; }
-            ',' => { expect_name = !stack.is_empty(); i += 1; }
+            '[' => { stack.push(None); expect_name = false; i += 1; }
+            ']' => { stack.pop(); expect_name = false; i += 1; }
+            ',' => { expect_name = matches!(stack.last(), Some(Some(_))); i += 1; }
             ':' => { expect_name = false; i += 1; }
             '"' => {
                 let mut j = i + 1;
@@ -517,7 +558,7 @@ fn duplicate_name_err(raw: &str) -> Option<String> {
                     else { lit.push(b[j]); j += 1; }
                 }
                 if expect_name {
-                    if let Some(seen) = stack.last_mut() {
+                    if let Some(Some(seen)) = stack.last_mut() {
                         // Unescape so two spellings of one name compare equal.
                         let name = serde_json::from_str::<String>(&format!("\"{}\"", lit))
                             .unwrap_or_else(|_| lit.clone());
@@ -536,8 +577,44 @@ fn duplicate_name_err(raw: &str) -> Option<String> {
     None
 }
 
+// unrenderable reports values with no canonical form: a number that is not a
+// finite float64 (with `arbitrary_precision`, `1e999` parses instead of failing,
+// so it must be refused here) and a sequence directly inside a sequence.
+const MAX_DEPTH: usize = 100; // levels of mappings and sequences; the root is level 1
+
+fn unrenderable(v: &Value, path: &str, in_seq: bool, depth: usize, out: &mut Vec<String>) {
+    if (v.is_array() || v.is_object()) && depth > MAX_DEPTH {
+        out.push(format!("{}: nesting deeper than {} levels", path, MAX_DEPTH));
+        return;
+    }
+    match v {
+        Value::Array(a) => {
+            if in_seq {
+                out.push(format!("{}: a sequence inside a sequence has no canonical form", path));
+            }
+            for (i, x) in a.iter().enumerate() {
+                unrenderable(x, &format!("{}[{}]", path, i), true, depth + 1, out);
+            }
+        }
+        Value::Object(m) => {
+            for (k, x) in m {
+                let child = if path.is_empty() { k.clone() } else { format!("{}.{}", path, k) };
+                unrenderable(x, &child, false, depth + 1, out);
+            }
+        }
+        Value::Number(n) => {
+            let t = n.to_string();
+            if path != "threshold" && (t.contains('.') || t.contains('e') || t.contains('E')) && n.as_f64().is_none() {
+                out.push(format!("{}: number is not a finite float64", path));
+            }
+        }
+        _ => {}
+    }
+}
+
 fn validate_manifest(parsed: &Value) -> Vec<String> {
     let mut errs = Vec::new();
+    unrenderable(parsed, "", false, 1, &mut errs);
     let map = match parsed.as_object() {
         Some(m) => m,
         None => return vec!["manifest must be a mapping".to_string()],
@@ -553,7 +630,7 @@ fn validate_manifest(parsed: &Value) -> Vec<String> {
         other => errs.push(format!(
             "version must be \"prml/0.1\" or \"prml/0.2\", got {:?}", other)),
     }
-    if !map.get("threshold").map(|v| v.is_number()).unwrap_or(false) {
+    if !map.get("threshold").and_then(|v| v.as_f64()).map(|f| f.is_finite()).unwrap_or(false) {
         errs.push("threshold must be a finite number".to_string());
     }
     if let Some(c) = map.get("comparator").and_then(|v| v.as_str()) {
@@ -650,8 +727,12 @@ fn schema_conformance_errors(map: &serde_json::Map<String, Value>) -> Vec<String
         }
     }
     if let Some(seed) = map.get("seed") {
-        if !seed.is_null() && seed.as_i64().is_none() && seed.as_u64().is_none() {
+        let int_spelling = matches!(seed, Value::Number(n) if !n.to_string().contains(['.', 'e', 'E']));
+        if !seed.is_null() && !int_spelling {
             errs.push("seed must be an integer or null".to_string());
+        } else if !seed.is_null() && seed.as_u64().is_none() && seed.as_i64() != Some(0) {
+            // §2.1: a non-negative 64-bit integer.
+            errs.push("seed must be a non-negative 64-bit integer (0 to 2^64-1)".to_string());
         }
     }
     if let Some(ds) = map.get("dataset").and_then(|v| v.as_object()) {

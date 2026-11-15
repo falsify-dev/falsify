@@ -6,6 +6,64 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed
+- **Mapping keys in `impl/js`, `impl/go` and `impl/rust`** now follow the §3.6 C5
+  plain-scalar rule, as the grammar and the Python reference already did: a key that
+  is not a plain scalar renders single-quoted. Manifests whose free-form keys
+  (`metric_args`, `model`, `compute_envelope`) need quoting now produce the same
+  canonical bytes in all four implementations; their JS, Go and Rust hashes change.
+  No published vector changes.
+- **`impl/rust` number parsing** uses correctly rounded float parsing
+  (`serde_json` feature `float_roundtrip`). Some 16 to 17 significant-digit values
+  were previously read as the neighbouring float64 and canonicalized to different
+  digits than the other implementations. No published vector changes.
+- **`impl/go` numbers render by value**, as in the other implementations: a decimal
+  or exponent spelling is read as a float64 and rendered by §C4, so `0.850`, `85e-2`
+  and `0.85` give one hash, and an integer spelling stays exact. A number that does
+  not fit a finite float64 (for example a `1e999` threshold) is now rejected.
+  Manifests that spell a number with trailing zeros or an exponent get a new Go
+  hash. No published vector changes.
+- **Stricter JSON input in `impl/go` and `impl/js`**: invalid UTF-8 and, in Go,
+  content after the JSON value are rejected, as in the Python and Rust
+  implementations; a lone surrogate escape is rejected, as in Rust.
+- **`impl/js` reads numbers from their spelling**, with its own strict JSON reader
+  (same behaviour on every Node.js version): integers beyond 2^53-1 stay exact in
+  JSON and YAML, `seed: 42.0` is rejected, and a float written `1.0` renders `1.0`
+  (§C6), as in the other implementations. Manifests with integer-valued floats
+  outside `threshold` get a new falsify-js hash.
+- **`impl/js` key order** follows Unicode code points (§C2) for keys above U+FFFF.
+- **Duplicate-key check in `impl/js`, `impl/go` and `impl/rust`** no longer treats a
+  string inside an array as a key name: `["a", "b", "b"]` is accepted.
+- **`impl/rust`** keeps integers beyond the 64-bit range exact (`serde_json`
+  feature `arbitrary_precision`) and rejects a sequence nested in a sequence
+  instead of panicking.
+
+### Changed (PRML v0.1 erratum 2026-11-15, see `spec/PRML-v0.1.md` Change Log)
+- **YAML input**: a plain scalar is a number only when spelled as a JSON number
+  (`1e3` is now the float 1000.0 in the Python reference too); other numeric-looking
+  plain scalars (`010`, `0x1F`, `1_000`, `1:30`, `.5`, `+1`) and unquoted timestamps
+  are rejected with exit 2. Quote them for a string. `<<` and `=` are plain strings.
+- **Rejected in all four implementations**: non-finite numbers in any field, a
+  `seed` outside 0 to 2^64-1, a sequence directly inside a sequence, nesting deeper
+  than 100 levels, and lone surrogates (U+D800 to U+DFFF). Keys named
+  `constructor`, `prototype` and `__proto__` are accepted everywhere.
+- **Canonical form**: an empty mapping renders `{}` and an empty sequence `[]`
+  (grammar C8; `impl/js`, `impl/go`, `impl/rust` and the registry change, Python
+  already did this). When two shortest digit strings tie, the one with the even
+  last digit is used (grammar C4; `impl/rust` changes).
+- **Python reference (`falsify_prml.py`) follows the grammar** where it had
+  departed: a string beginning `---` or `...` renders plain when §C5 says so, a key
+  longer than 128 characters or an empty key renders as a simple key, and a YAML
+  anchor or alias is written out instead of emitted as `&id001`. YAML tags outside
+  the core types (`!!binary`, `!!set`, `!!omap`, `!!pairs`, `!!timestamp`) are
+  rejected. Manifests containing these inputs get a new Python hash.
+- **Legacy `falsify` CLI (`falsify.py`)** rejects a repeated key in a spec file.
+- **Tests**: `tests/test_erratum_2026_11_15.py` checks one case per erratum rule
+  (`tests/fixtures/erratum-2026-11-15-cases.json`) against the Python reference and,
+  where available, the JavaScript, Go and Rust CLIs; the multi-language workflow
+  runs it for each implementation. The JavaScript `test-vectors` runner now reads
+  vector files with the strict reader, so inputs keep their exact spelling.
+
 ## [0.5.3] — 2026-11-02
 
 ### Changed

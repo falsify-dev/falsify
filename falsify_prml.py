@@ -68,7 +68,9 @@ _HEX64 = re.compile(r"^[0-9a-f]{64}$")
 # rejected at validation rather than silently producing a non-portable hash.
 # Rejecting them is additive: no conformance vector contains these, so no valid
 # manifest's hash changes. Printable Unicode (emoji, CJK, accents) is unaffected.
-_FORBIDDEN_CHARS = re.compile(r"[\x00-\x1f\x7f-\x9f  ﻿]")
+# A lone surrogate (JSON "\ud800" with no pair) has no UTF-8 encoding and is
+# refused for the same reason.
+_FORBIDDEN_CHARS = re.compile(r"[\x00-\x1f\x7f-\x9f  ﻿\ud800-\udfff]")
 
 
 def _bad_char_fields(obj, path="") -> list[str]:
@@ -135,14 +137,56 @@ def canonicalize(manifest: dict) -> str:
                 m["threshold"] = int(t)
             elif isinstance(t, int) and abs(t) >= 2**53:
                 m["threshold"] = float(t)
-    canonical = yaml.safe_dump(
+    canonical = yaml.dump(
         m,
+        Dumper=_canon_dumper(),
         default_flow_style=False,
         sort_keys=True,
         width=float("inf"),
         allow_unicode=True,
     )
     return canonical.replace("\r\n", "\n").rstrip() + "\n"
+
+
+_CANON_DUMPER = None
+
+
+def _canon_dumper():
+    """SafeDumper held to the canonical grammar (spec/grammar/), in three places
+    where PyYAML's defaults differ from it:
+
+    - a string starting with `---` or `...` is plain when C5 says plain (PyYAML
+      quotes every such string because it could be a document marker at column 0;
+      in canonical output it never is);
+    - a key renders as a simple key whatever its length, and the empty key as
+      `''` (PyYAML switches to the two-line `? key` form above 128 characters);
+    - a value referenced twice is written out twice, never as `&id001`/`*id001`.
+    """
+    global _CANON_DUMPER
+    if _CANON_DUMPER is not None:
+        return _CANON_DUMPER
+    yaml = _require_yaml()
+
+    class _CanonDumper(yaml.SafeDumper):
+        def ignore_aliases(self, data):
+            return True
+
+        def check_simple_key(self):
+            return True
+
+        def analyze_scalar(self, scalar):
+            if scalar.startswith(("---", "...")):
+                # Analyse as if the first character were an ordinary letter: the
+                # document-indicator check is the only rule that looks at the
+                # three-character prefix, and the first character is '-' or '.'
+                # followed by the same, which no other rule treats specially.
+                analysis = super().analyze_scalar("x" + scalar[1:])
+                analysis.scalar = scalar
+                return analysis
+            return super().analyze_scalar(scalar)
+
+    _CANON_DUMPER = _CanonDumper
+    return _CanonDumper
 
 
 def manifest_hash(manifest: dict) -> str:
@@ -154,6 +198,64 @@ def manifest_hash(manifest: dict) -> str:
 # ─────────────────────────────────────────────────────────────────────────
 
 _CORE_LOADER = None
+
+# The shared reading of numbers and timestamps in YAML input (see _core_loader).
+_JSON_INT = re.compile(r"^-?(?:0|[1-9][0-9]*)$")
+_JSON_FLOAT = re.compile(r"^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][-+]?[0-9]+)?$")
+_SPECIAL_FLOAT = re.compile(r"^(?:[-+]?\.(?:inf|Inf|INF)|\.(?:nan|NaN|NAN))$")
+_NUMBER_LIKE = re.compile(
+    # YAML 1.1 int, YAML 1.1 float, YAML 1.2 core int, YAML 1.2 core float
+    r"^(?:[-+]?0b[0-1_]+|[-+]?0[0-7_]+|[-+]?(?:0|[1-9][0-9_]*)|[-+]?0x[0-9a-fA-F_]+|[-+]?[1-9][0-9_]*(?::[0-5]?[0-9])+)$"
+    r"|^(?:[-+]?(?:[0-9][0-9_]*)\.[0-9_]*(?:[eE][-+][0-9]+)?|\.[0-9][0-9_]*(?:[eE][-+][0-9]+)?|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\.[0-9_]*)$"
+    r"|^[-+]?(?:[0-9]+|0b[01]+|0o[0-7]+|0x[0-9a-fA-F]+)$"
+    r"|^(?:[-+]?[0-9]+(?:\.[0-9]*)?(?:[eE][-+]?[0-9]+)?|\.[0-9]+(?:[eE][-+]?[0-9]+)?)$")
+_YAML_TIMESTAMP = re.compile(
+    r"^(?:[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]|[0-9][0-9][0-9][0-9]-[0-9][0-9]?-[0-9][0-9]?"
+    r"(?:[Tt]|[ \t]+)[0-9][0-9]?:[0-9][0-9]:[0-9][0-9](?:\.[0-9]*)?(?:[ \t]*(?:Z|[-+][0-9][0-9]?(?::[0-9][0-9])?))?)$")
+_TAG_BAD_NUMBER = "tag:falsify.dev,2026:number-spelling"
+_TAG_BAD_TIMESTAMP = "tag:falsify.dev,2026:timestamp"
+
+# Levels of mappings and sequences a manifest may nest; the root is level 1.
+_MAX_DEPTH = 100
+
+
+def _check_depth(obj) -> None:
+    """Depth limit and cycle check (a recursive YAML alias), done iteratively so
+    the check itself cannot hit the interpreter's recursion limit."""
+    stack = [(obj, 1, frozenset())]
+    while stack:
+        cur, depth, ancestors = stack.pop()
+        if not isinstance(cur, (dict, list)):
+            continue
+        if depth > _MAX_DEPTH or id(cur) in ancestors:
+            raise ValueError("manifest nesting too deep")
+        children = cur.values() if isinstance(cur, dict) else cur
+        inner = ancestors | {id(cur)}
+        for ch in children:
+            stack.append((ch, depth + 1, inner))
+
+
+def _structural_errors(obj, path="", depth=1, in_seq=False) -> list[str]:
+    """Values with no canonical form, wherever they sit: a number that is not a
+    finite float64 (the root threshold has its own message), a sequence directly
+    inside a sequence, and nesting deeper than _MAX_DEPTH levels."""
+    out = []
+    if isinstance(obj, float):
+        if not math.isfinite(obj) and path != "threshold":
+            out.append(f"{path}: number is not a finite float64")
+    elif isinstance(obj, (dict, list)):
+        if depth > _MAX_DEPTH:
+            return [f"{path}: nesting deeper than {_MAX_DEPTH} levels"]
+        if isinstance(obj, list):
+            if in_seq:
+                out.append(f"{path}: a sequence inside a sequence has no canonical form")
+            for i, v in enumerate(obj):
+                out.extend(_structural_errors(v, f"{path}[{i}]", depth + 1, True))
+        else:
+            for k, v in obj.items():
+                child = f"{path}.{k}" if path else str(k)
+                out.extend(_structural_errors(v, child, depth + 1, False))
+    return out
 
 
 def _core_loader():
@@ -194,11 +296,26 @@ def _core_loader():
                 seen.add(key)
             return super().construct_mapping(node, deep=deep)
 
-    # Rebuild implicit resolvers, dropping YAML-1.1-only bool/null spellings.
+    # Rebuild implicit resolvers, dropping YAML-1.1-only bool/null spellings and
+    # replacing the number and timestamp resolvers with the closed reading every
+    # reference implementation shares (falsify-js and the registry carry the same
+    # patterns):
+    #   - a plain scalar spelled exactly as a JSON number is a number (an integer
+    #     spelling an int, a fraction or exponent a float); `.inf`/`.nan` are
+    #     floats (rejected later as non-finite);
+    #   - any other plain scalar that YAML 1.1 or 1.2 would type as a number
+    #     (`010`, `0x1F`, `1_000`, `1:30`, `.5`, `5.`, `+1`) is an error: readers
+    #     disagree on its value;
+    #   - an unquoted timestamp is an error (quote it).
     _CoreSafeLoader.yaml_implicit_resolvers = {}
     for ch, mappings in yaml.SafeLoader.yaml_implicit_resolvers.items():
         kept = []
         for tag, regexp in mappings:
+            if tag in ("tag:yaml.org,2002:int", "tag:yaml.org,2002:float", "tag:yaml.org,2002:timestamp",
+                       "tag:yaml.org,2002:merge", "tag:yaml.org,2002:value"):
+                # merge (`<<`) and value (`=`) are YAML 1.1 types that YAML 1.2 core
+                # does not have: a plain `<<` or `=` is a string, as in falsify-js.
+                continue
             if tag == "tag:yaml.org,2002:bool":
                 # YAML 1.2 core: only true/false (any case). Drop yes/no/on/off/y/n.
                 regexp = re.compile(r"^(?:true|True|TRUE|false|False|FALSE)$")
@@ -207,6 +324,37 @@ def _core_loader():
                 regexp = re.compile(r"^(?:~|null|Null|NULL|)$")
             kept.append((tag, regexp))
         _CoreSafeLoader.yaml_implicit_resolvers[ch] = kept
+    number_first = list("-+0123456789.")
+    for tag, regexp, first in (
+        ("tag:yaml.org,2002:int", _JSON_INT, number_first),
+        ("tag:yaml.org,2002:float", _JSON_FLOAT, number_first),
+        ("tag:yaml.org,2002:float", _SPECIAL_FLOAT, number_first),
+        (_TAG_BAD_NUMBER, _NUMBER_LIKE, number_first),
+        (_TAG_BAD_TIMESTAMP, _YAML_TIMESTAMP, list("0123456789")),
+    ):
+        _CoreSafeLoader.add_implicit_resolver(tag, regexp, first)
+
+    def _bad_number(loader, node):
+        raise yaml.constructor.ConstructorError(
+            None, None,
+            f"{node.value!r} is not a JSON number spelling and YAML readers disagree on its "
+            "value; write it as a JSON number, or quote it for a string", node.start_mark)
+
+    def _bad_timestamp(loader, node):
+        raise yaml.constructor.ConstructorError(
+            None, None,
+            f"unquoted timestamp {node.value!r}: quote it (YAML readers disagree on its value)",
+            node.start_mark)
+
+    # §3.1 allows no tags beyond the core types: binary, set, omap, pairs and
+    # timestamp constructors are removed, so such a tag is an error.
+    _CoreSafeLoader.yaml_constructors = {
+        tag: fn for tag, fn in yaml.SafeLoader.yaml_constructors.items()
+        if tag not in ("tag:yaml.org,2002:binary", "tag:yaml.org,2002:set", "tag:yaml.org,2002:omap",
+                       "tag:yaml.org,2002:pairs", "tag:yaml.org,2002:timestamp")
+    }
+    _CoreSafeLoader.add_constructor(_TAG_BAD_NUMBER, _bad_number)
+    _CoreSafeLoader.add_constructor(_TAG_BAD_TIMESTAMP, _bad_timestamp)
     _CORE_LOADER = _CoreSafeLoader
     return _CoreSafeLoader
 
@@ -250,17 +398,47 @@ def load_manifest(path: str) -> dict:
     with open(path, "r", encoding="utf-8") as fh:
         text = fh.read()
     if path.endswith(".json"):
-        return json.loads(text, object_pairs_hook=_no_duplicate_pairs)
+        try:
+            obj = json.loads(text, object_pairs_hook=_no_duplicate_pairs)
+        except RecursionError:
+            raise ValueError("manifest nesting too deep") from None
+        _check_depth(obj)
+        return obj
     yaml = _require_yaml()
     # nosec B506 — _core_loader() returns a yaml.SafeLoader subclass (only its
     # bool/null implicit resolvers are narrowed to YAML 1.2 core); it cannot
     # instantiate arbitrary objects, so this is a safe load.
     try:
-        return yaml.load(text, Loader=_core_loader())  # nosec B506
+        obj = yaml.load(text, Loader=_core_loader())  # nosec B506
+    except RecursionError:
+        raise ValueError("manifest nesting too deep") from None
     except yaml.YAMLError as e:
         # Callers handle ValueError; a YAML parse failure is a malformed manifest,
         # not a crash, and must read as one (duplicate keys arrive through here).
         raise ValueError(str(e).replace("\n", " ").strip()) from e
+    _check_depth(obj)
+    return _join_surrogate_pairs(obj)
+
+
+def _join_surrogate_pairs(obj):
+    """PyYAML decodes a double-quoted "\\ud83d\\ude00" into two lone surrogates; JSON
+    and the other YAML readers join a valid pair into one character. Join pairs in
+    keys and values; a surrogate left without a partner is rejected by §3.4."""
+    if isinstance(obj, str):
+        if any("\ud800" <= ch <= "\udfff" for ch in obj):
+            return obj.encode("utf-16-le", "surrogatepass").decode("utf-16-le", "surrogatepass")
+        return obj
+    if isinstance(obj, dict):
+        out = {}
+        for k, v in obj.items():
+            jk = _join_surrogate_pairs(k)
+            if jk in out:  # two spellings of one key: still a duplicate (§3.2.1)
+                raise ValueError(f"duplicate key {jk!r} — a PRML manifest MUST NOT repeat a key")
+            out[jk] = _join_surrogate_pairs(v)
+        return out
+    if isinstance(obj, list):
+        return [_join_surrogate_pairs(v) for v in obj]
+    return obj
 
 
 def validate_manifest(m: dict) -> list[str]:
@@ -304,6 +482,7 @@ def validate_manifest(m: dict) -> list[str]:
     for fld in _non_nfc_fields(m):
         errors.append(f"{fld}: string is not in Unicode NFC — the same text in a "
                       f"different normalization form hashes differently; normalize to NFC")
+    errors.extend(_structural_errors(m))
     errors.extend(_schema_conformance_errors(m))
     return errors
 
@@ -337,6 +516,8 @@ def _schema_conformance_errors(m: dict) -> list[str]:
     seed = m.get("seed")
     if seed is not None and (isinstance(seed, bool) or not isinstance(seed, int)):
         errors.append("seed must be an integer or null")
+    elif seed is not None and not (0 <= seed < 2**64):
+        errors.append("seed must be a non-negative 64-bit integer (0 to 2^64-1)")
     ds = m.get("dataset")
     if isinstance(ds, dict):
         if isinstance(ds.get("id"), str) and len(ds["id"]) < 1:

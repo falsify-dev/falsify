@@ -33,11 +33,13 @@ is what the Go and Rust references are.
 | Rule | Where it is stated | Notes |
 |---|---|---|
 | Field set, types, required fields | PRML-v0.1.md §2; `schema/prml-v0.1.schema.json`, `schema/prml-v0.2.schema.json` | `additionalProperties: false` — unknown keys are rejected |
-| Canonical byte sequence | **`grammar/prml-canonical.abnf`** + **`grammar/README.md` C1–C7** (normative, §3.6) | The prose of §3 is secondary to these |
+| Canonical byte sequence | **`grammar/prml-canonical.abnf`** + **`grammar/README.md` C1–C8** (normative, §3.6) | The prose of §3 is secondary to these |
 | Plain vs single-quoted strings | `grammar/README.md` **C5**, predicate P1–P6 with the YAML 1.1 resolver patterns verbatim | Transcribe the patterns. Do not approximate them. |
-| Float spelling | `grammar/README.md` **C4** | Shortest round-trip digits; decimal for −4 ≤ e < 16, exponent form otherwise; `1.0e-05` not `1e-05` |
+| Float spelling | `grammar/README.md` **C4** | Shortest round-trip digits; decimal for −4 ≤ e < 16, exponent form otherwise; `1.0e-05` not `1e-05`; a tie takes the even last digit |
+| Reading YAML input | PRML-v0.1.md erratum 2026-11-15 | A plain scalar is a number only when spelled as a JSON number; other numeric-looking plain scalars and unquoted timestamps are rejected; a float spelled `1.0` stays a float |
+| Empty mapping / sequence | `grammar/README.md` **C8** | `key: {}`, `key: []`, `- {}` |
 | `threshold` rendering | `grammar/README.md` **C6** | v0.1: always float. v0.2: by value — integral and below 2^53 → integer, otherwise float |
-| What to reject | PRML-v0.1.md §3.2.1, §3.4, §3.5; `test-vectors/reject/README.md` | Duplicate keys, non-portable characters, non-NFC strings, non-finite thresholds |
+| What to reject | PRML-v0.1.md §3.2.1, §3.4, §3.5, erratum 2026-11-15; `test-vectors/reject/README.md` | Duplicate keys, non-portable characters (lone surrogates included), non-NFC strings, non-finite numbers, `seed` outside 0 to 2^64-1, a sequence inside a sequence, nesting deeper than 100 levels |
 | Exit codes | PRML-v0.1.md §7 | 0 pass · 10 fail · 3 tampered · 11 guard · 2 bad input |
 
 The reference implementations are **conforming implementations of the grammar,
@@ -110,9 +112,9 @@ testing the grammar's edges; none was caught by the 21 conformance vectors.
 - Rendering v0.2 `threshold` by parsed type. Parsers disagree on whether `1300.0`
   is an integer; the rule is by value (C6).
 
-Two limits worth knowing: the JavaScript `test-vectors` runner preserves big
+Two limits worth knowing: the registry's `test-canonicalize.js` preserves big
 integers with a text-unaware regex, so vector titles never spell 16+-digit numbers
-(grammar README G6); and no schema-valid manifest can currently reach a nested key
+(grammar README G6; the falsify-js runner reads vectors exactly since 2026-11-15); and no schema-valid manifest can currently reach a nested key
 named `threshold`, so the depth at which C6 applies is untested (G4).
 
 ## When it passes

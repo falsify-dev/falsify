@@ -260,7 +260,7 @@ footer.colophon a:hover { color: var(--ink); }
   <figcaption style="margin-top: 10px; font-size: 13px; color: var(--ink-3, #5a6677); font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: 0.02em;">60-second walkthrough: what a client receives at AI handover. A completed acceptance record (illustrative, demo signatures); every receipt shown is public at registry.falsify.dev. Live at <a href="https://spec.falsify.dev/demo/" style="color: var(--ink-2);">/demo</a>.</figcaption>
 </figure>
 
-<article id="content" data-prerendered="sha256:cd5045540705317ff1b8dc9fd7dd6a36a1ff4a7845b52a0f7675f5f3accbb3ae">
+<article id="content" data-prerendered="sha256:0c540173908016997843118755bf2008653bb28c95aff4f9a20312eee6b11c57">
 <!-- prerender: PRML-v0.1.md · marked 12.0.2 · scripts/spec-prerender.mjs — ÜRETİLMİŞ, elle düzeltme; .md düzelt ve --write koş -->
 <h1 id="prml-pre-registered-ml-manifest-specification">PRML — Pre-Registered ML Manifest Specification</h1>
 <p><strong>Version:</strong> 0.1 (Draft)
@@ -675,6 +675,7 @@ code points:</p>
 <li>U+007F (DELETE) and U+0080–U+009F (C1 control characters)</li>
 <li>U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR)</li>
 <li>U+FEFF (BYTE ORDER MARK / ZERO WIDTH NO-BREAK SPACE)</li>
+<li>U+D800–U+DFFF (lone surrogates; erratum 2026-11-15)</li>
 </ul>
 <p>These code points serialize ambiguously or invisibly and would let two
 visually identical manifests hash differently. A manifest containing any of
@@ -712,11 +713,11 @@ vectors, one of them does not (finding of 2026-09-13).</p>
 <h3 id="36-formal-grammar">3.6 Formal Grammar</h3>
 <p>The canonical byte sequence is specified by the ABNF grammar in
 <a href="grammar/prml-canonical.abnf"><code>spec/grammar/prml-canonical.abnf</code></a> together with
-the constraints C1–C7 stated in <a href="grammar/README.md"><code>spec/grammar/README.md</code></a>:
+the constraints C1–C8 stated in <a href="grammar/README.md"><code>spec/grammar/README.md</code></a>:
 depth (C1), key order (C2), uniqueness (C3), float rendering (C4), the
-plain-scalar predicate (C5), which production a value takes (C6), and block
-sequences (C7, informative). The grammar and constraints C1–C6 are
-<strong>normative</strong>. The reference canonicalizer is one conforming implementation of
+plain-scalar predicate (C5), which production a value takes (C6), block
+sequences (C7, informative) and empty collections (C8, erratum 2026-11-15). The
+grammar and constraints C1–C6 and C8 are <strong>normative</strong>. The reference canonicalizer is one conforming implementation of
 them, not their definition. An implementation that satisfies the grammar and
 C1–C6 produces, for every conformance vector in Appendix B, exactly the
 published canonical bytes and hash.</p>
@@ -1247,6 +1248,51 @@ the anchor time; it cannot show that no other version was created or used in
 the meantime, when testing began, or whether that version was followed. Both
 sentences now say so. No normative text, canonical byte, digest or validation
 rule changes.</p>
+</blockquote>
+<blockquote>
+<p><strong>v0.1 erratum (2026-11-15): input reading and two canonical forms,
+TECHNICAL.</strong> A differential review of the four reference implementations found
+inputs, none covered by a conformance vector, on which they read or render the
+same manifest differently. The rules below close those gaps. No published
+vector, canonical byte or digest in Appendix B or the edge suite changes. Where
+an implementation departed from a rule it now conforms, and its bytes change for
+the affected inputs only.</p>
+<ol>
+<li><strong>Numbers in YAML input (§3.1).</strong> A plain scalar is a number only when it is
+spelled exactly as a JSON number (RFC 8259 §6): an integer spelling is an
+integer, a spelling with a fraction or an exponent is a float64; <code>.inf</code> and
+<code>.nan</code> read as floats and are then rejected (item 3). Any other plain scalar
+that YAML 1.1 or YAML 1.2 types as a number — <code>010</code>, <code>0x1F</code>, <code>0o17</code>,
+<code>1_000</code>, <code>1:30</code>, <code>.5</code>, <code>5.</code>, <code>+1</code> — MUST be rejected with exit <code>2</code>, because
+YAML readers disagree on its value. Quoted, any of them is a string.</li>
+<li><strong>Unquoted timestamps (§3.1).</strong> A plain scalar that YAML 1.1 reads as a
+timestamp (<code>2026-05-01</code>, <code>2026-05-01T12:00:00Z</code>) MUST be rejected with exit
+<code>2</code>; quoted, it is a string. <code>created_at</code> was already required to be an
+RFC 3339 string.</li>
+<li><strong>Non-finite numbers anywhere (§3.5).</strong> The rule for <code>threshold</code> now applies
+to every number in the manifest: infinity and NaN have no canonical form and
+MUST be rejected with exit <code>2</code>.</li>
+<li><strong><code>seed</code> range (§2.1).</strong> <code>seed</code> MUST be an integer in [0, 2^64-1]; a
+negative or larger value MUST be rejected with exit <code>2</code>.</li>
+<li><strong>Structure.</strong> A sequence directly inside a sequence has no canonical form
+and MUST be rejected. A manifest MUST NOT nest mappings and sequences more
+than 100 levels deep (the root mapping is level 1). Keys named
+<code>constructor</code>, <code>prototype</code> and <code>__proto__</code> are ordinary keys.</li>
+<li><strong>Lone surrogates (§3.4).</strong> A string or key containing a code point in
+U+D800–U+DFFF (possible through a JSON <code>\uD800</code> escape) has no UTF-8 encoding
+and MUST be rejected with exit <code>2</code>.</li>
+<li><strong>Empty mapping and empty sequence (§3.6, grammar C8).</strong> The grammar had no
+production for them. An empty mapping renders <code>{}</code> and an empty sequence <code>[]</code>
+after <code>key: </code>, and an empty mapping as a sequence item renders <code>- {}</code>, as the
+Python reference already wrote them.</li>
+<li><strong>Ties in shortest round-trip digits (§3.6, grammar C4).</strong> When two digit
+strings of the shortest length are equally close to the value, the one whose
+last digit is even is used (<code>87320258963721.625</code> renders
+<code>87320258963721.62</code>), as Python, JavaScript and Go already did.</li>
+</ol>
+<p>Unchanged: negative zero renders <code>-0.0</code> (C4); a string beginning <code>---</code> or
+<code>...</code> renders by the plain-scalar predicate (C5), so <code>notes: ...more</code> is plain.
+The Python reference now follows both where it had departed.</p>
 </blockquote>
 <hr>
 <p><em>Editor&#39;s note: This document is intended to be readable, implementable, and

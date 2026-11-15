@@ -6,10 +6,11 @@ description = "PRML v0.1 fourth reference implementation in Rust"
 license = "MIT"
 
 [dependencies]
-serde_json = { version = "1", features = ["preserve_order"] }
+serde_json = { version = "1", features = ["preserve_order", "float_roundtrip", "arbitrary_precision"] }
 sha2 = "0.10"
 unicode-normalization = "0.1"
 regex = "1"
+zmij = "1"
 
 [[bin]]
 name = "falsify-rs"
