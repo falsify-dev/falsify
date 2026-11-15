@@ -157,6 +157,8 @@ jobs:
           python-version: '3.12'
 
       - name: Erratum 2026-11-15 regression cases (shared fixture, checked against Python)
+        env:
+          ERRATUM_REQUIRE: js
         run: |
           pip install pyyaml
           python3 -m unittest tests.test_erratum_2026_11_15 -v
@@ -193,6 +195,8 @@ jobs:
           python-version: '3.12'
 
       - name: Erratum 2026-11-15 regression cases (shared fixture, checked against Python)
+        env:
+          ERRATUM_REQUIRE: go
         run: |
           pip install pyyaml
           python3 -m unittest tests.test_erratum_2026_11_15 -v
@@ -239,6 +243,8 @@ jobs:
           python-version: '3.12'
 
       - name: Erratum 2026-11-15 regression cases (shared fixture, checked against Python)
+        env:
+          ERRATUM_REQUIRE: rust
         run: |
           pip install pyyaml
           python3 -m unittest tests.test_erratum_2026_11_15 -v

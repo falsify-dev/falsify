@@ -13,6 +13,7 @@ JSON only), matching the skip pattern of test_linkage_parity.py.
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import tempfile
@@ -85,6 +86,10 @@ class TestPythonReference(unittest.TestCase):
 class TestOtherImplementations(unittest.TestCase):
     def test_cli_hash_matches_reference(self):
         targets = _targets()
+        # CI sets ERRATUM_REQUIRE (js, go or rust) so a failed build cannot turn into a skip.
+        required = [n for n in os.environ.get("ERRATUM_REQUIRE", "").split(",") if n]
+        missing = [n for n in required if n not in targets]
+        self.assertFalse(missing, f"required implementation not available: {missing}")
         if not targets:
             raise unittest.SkipTest("no other implementation available (node/go/rust missing)")
         for name, (cmd, formats) in targets.items():
