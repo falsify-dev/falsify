@@ -2457,5 +2457,14 @@
  "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00+00:00", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}},
  "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00+00:00'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
  "hash": "13ad142158c5d58475f30057a23af1cdc5d821e6090f14683bdbc2e18683356d"
+},
+{
+ "id": "EV-114",
+ "source": "erratum-2026-11-15",
+ "title": "E3-code-mapping",
+ "description": "PRML v0.1 erratum 2026-11-15 (third part), rule 2.2. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "code": {"id": "eval.py", "hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncode:\n  hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  id: eval.py\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "761fd976e56e28126553ec58d7c716ecd9bceb13d8afa1915e3f4c5025462300"
 }
 ]

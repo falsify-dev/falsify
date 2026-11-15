@@ -175,8 +175,8 @@ vectors encoded. It was settled the same day, by value (RFC "Post-freeze
 clarification", C6 above): Python, Go and Rust changed for `1300.0` inputs, no
 published digest changed, and ten boundary vectors (EV-083..EV-092) were added
 to the edge suite, which then had 92 vectors and passed in all four
-implementations and the registry. The erratum of 2026-11-15 added EV-093..EV-113;
-all 113 pass in all four implementations, the registry and `check_grammar.py`. `candidate-vectors-2026-09-13.json` keeps the
+implementations and the registry. The erratum of 2026-11-15 added EV-093..EV-114;
+all 114 pass in all four implementations, the registry and `check_grammar.py`. `candidate-vectors-2026-09-13.json` keeps the
 pre-decision measurement in `implementation_status_2026_09_13`; its expected
 bytes for CV-V2b were updated to the decided rule (see its `note`).
 

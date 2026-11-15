@@ -49,7 +49,7 @@ class _UniqueKeySafeLoader(yaml.SafeLoader):
 def _load_spec_yaml(text):
     return yaml.load(text, Loader=_UniqueKeySafeLoader)  # nosec B506 (SafeLoader subclass)
 
-__version__ = "0.7.0"
+__version__ = "0.7.1"
 
 EXIT_PASS = 0
 EXIT_FAIL = 10

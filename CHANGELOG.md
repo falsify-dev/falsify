@@ -6,6 +6,11 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.7.1] — 2026-11-15
+
+### Added
+- Edge vector EV-114 (113 → 114): a `code` mapping.
+
 ### Changed (PRML v0.1 erratum 2026-11-15, third part)
 - **`code` is accepted** as an optional mapping, as spec §2.2 has listed it
   since the first draft; all four implementations rejected it as an unknown key.
