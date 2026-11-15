@@ -683,7 +683,7 @@ fn type_errors(map: &serde_json::Map<String, Value>) -> Vec<String> {
             if !v.is_string() { errs.push(format!("{} must be a string", f)); }
         }
     }
-    for f in ["dataset", "producer", "model", "metric_args", "compute_envelope"] {
+    for f in ["dataset", "producer", "model", "metric_args", "compute_envelope", "code"] {
         if let Some(v) = map.get(f) {
             if !v.is_object() { errs.push(format!("{} must be a mapping", f)); }
         }
@@ -801,9 +801,9 @@ fn schema_conformance_errors(map: &serde_json::Map<String, Value>) -> Vec<String
             errs.push("notes must be a string of at most 4096 characters".to_string());
         }
     }
-    const TOP: [&str; 14] = ["version", "claim_id", "created_at", "metric", "comparator",
+    const TOP: [&str; 15] = ["version", "claim_id", "created_at", "metric", "comparator",
         "threshold", "dataset", "seed", "producer", "model", "compute_envelope",
-        "prior_hash", "notes", "metric_args"];
+        "prior_hash", "notes", "metric_args", "code"];
     for k in map.keys() {
         if !TOP.contains(&k.as_str()) {
             errs.push(format!("{}: unknown top-level field (schema additionalProperties: false)", k));

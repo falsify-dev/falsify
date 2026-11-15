@@ -469,6 +469,20 @@
    "format": "json",
    "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"prior_hash\": null}",
    "canonical": null
+  },
+  {
+   "id": "E3-code-mapping",
+   "rule": "2.2",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"code\": {\"id\": \"eval.py\", \"hash\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}}",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncode:\n  hash: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n  id: eval.py\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "J-reject-type-code-string",
+   "rule": "2.2",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"code\": \"eval.py\"}",
+   "canonical": null
   }
  ]
 }

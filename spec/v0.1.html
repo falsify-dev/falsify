@@ -260,7 +260,7 @@ footer.colophon a:hover { color: var(--ink); }
   <figcaption style="margin-top: 10px; font-size: 13px; color: var(--ink-3, #5a6677); font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: 0.02em;">60-second walkthrough: what a client receives at AI handover. A completed acceptance record (illustrative, demo signatures); every receipt shown is public at registry.falsify.dev. Live at <a href="https://spec.falsify.dev/demo/" style="color: var(--ink-2);">/demo</a>.</figcaption>
 </figure>
 
-<article id="content" data-prerendered="sha256:6168837743e1c0eb36f2a80febb1ba629f5ea213edb8d8523773e59250742f36">
+<article id="content" data-prerendered="sha256:f3764b7e36c87aed17da3db93f27de774f579489800e511b35a00105295d5647">
 <!-- prerender: PRML-v0.1.md · marked 12.0.2 · scripts/spec-prerender.mjs — ÜRETİLMİŞ, elle düzeltme; .md düzelt ve --write koş -->
 <h1 id="prml-pre-registered-ml-manifest-specification">PRML — Pre-Registered ML Manifest Specification</h1>
 <p><strong>Version:</strong> 0.1 (Draft)
@@ -495,6 +495,11 @@ following top-level keys:</p>
 <td><code>code</code></td>
 <td>mapping</td>
 <td>Identifier of the code (e.g., git commit) used to evaluate.</td>
+</tr>
+<tr>
+<td><code>compute_envelope</code></td>
+<td>mapping</td>
+<td>Free-form description of compute conditions (precision, hardware class, software stack hash). Not used for the verdict. <em>(Listed 2026-11-15; the schema and every implementation already accepted it.)</em></td>
 </tr>
 <tr>
 <td><code>prior_hash</code></td>
@@ -1329,6 +1334,26 @@ string. JSON keys are always strings.</li>
    for <code>threshold</code> apply to the root mapping only; a <code>threshold</code> key inside
    <code>metric_args</code> renders by its spelling like any other number. The Python
    reference and the grammar already did this.</li>
+</ol>
+</blockquote>
+<blockquote>
+<p><strong>v0.1 erratum (2026-11-15, third part): optional fields as §2.2 lists them,
+TECHNICAL.</strong> The text decides; the JSON Schemas and the validators follow it,
+and only widen. No published vector, canonical byte or digest changes, and no
+manifest that was valid before becomes invalid.</p>
+<ol start="14">
+<li><strong><code>code</code> (§2.2).</strong> <code>code</code> was listed as an optional mapping since the first
+   draft, but the schemas and every validator rejected it as an unknown key. It
+   is now accepted as a mapping; any other type is rejected with exit <code>2</code>.</li>
+<li><strong><code>compute_envelope</code> (§2.2).</strong> The schemas and every validator accepted it;
+   §2.2 now lists it (editorial).</li>
+<li><strong><code>model</code> (§2.2).</strong> §2.2 says only <em>mapping</em>, and every validator accepted
+   keys besides <code>id</code>, <code>hash</code> and <code>uri</code> (such as <code>version</code>). The schemas no
+   longer forbid them. The v0.2 schema now lists <code>metric_args</code> and <code>code</code>, which
+   it had left out, and marks the v0.2 RFC proposal fields (<code>prml_mode</code>,
+   <code>value_method</code>, <code>sample_size</code>, the window fields, <code>runner_attestation</code>,
+   <code>revoked_at</code>, <code>revocation_reason</code>) as not adopted: the reference
+   implementations reject them until v0.2 is promoted.</li>
 </ol>
 </blockquote>
 <hr>

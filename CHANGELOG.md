@@ -6,6 +6,17 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed (PRML v0.1 erratum 2026-11-15, third part)
+- **`code` is accepted** as an optional mapping, as spec §2.2 has listed it
+  since the first draft; all four implementations rejected it as an unknown key.
+  Any other type is rejected.
+- **§2.2 lists `compute_envelope`**, which the schemas and implementations
+  already accepted.
+- **JSON Schemas widened to the text:** `model` allows keys besides `id`, `hash`
+  and `uri`; the v0.2 schema lists `metric_args` and `code`; its v0.2 RFC
+  proposal fields are marked as not adopted. The schema page says the text
+  decides where the two differ.
+
 ## [0.7.0] — 2026-11-15
 
 ### Added

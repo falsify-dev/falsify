@@ -62,7 +62,7 @@
 
     "model": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "hash": {"type": "string"},
@@ -70,6 +70,8 @@
       }
     },
 
+    "metric_args": {"type": "object"},
+    "code": {"type": "object", "additionalProperties": true},
     "compute_envelope": {
       "type": "object",
       "additionalProperties": true
@@ -83,50 +85,50 @@
     "prml_mode": {
       "type": "string",
       "enum": ["static", "streaming"],
-      "description": "v0.2 P-01. Default 'static' (v0.1 behaviour). 'streaming' enables window-based commitments."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-01. Default 'static' (v0.1 behaviour). 'streaming' enables window-based commitments."
     },
 
     "value_method": {
       "type": "string",
       "minLength": 1,
       "maxLength": 256,
-      "description": "v0.2 P-01. Aggregation rule identifier in streaming mode (e.g. 'lmsys_anonymous_chat_arena_v1', 'mean_over_window')."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-01. Aggregation rule identifier in streaming mode (e.g. 'lmsys_anonymous_chat_arena_v1', 'mean_over_window')."
     },
 
     "sample_size": {
       "type": "integer",
       "minimum": 0,
-      "description": "v0.2 P-01. In static mode: exact eval set size. In streaming mode: minimum sample size below which the verdict is undefined."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-01. In static mode: exact eval set size. In streaming mode: minimum sample size below which the verdict is undefined."
     },
 
     "pre_registered_from": {
       "type": "string",
       "format": "date-time",
-      "description": "v0.2 P-01. Streaming mode start of window."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-01. Streaming mode start of window."
     },
 
     "pre_registered_to": {
       "type": "string",
       "format": "date-time",
-      "description": "v0.2 P-01. Streaming mode end of window."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-01. Streaming mode end of window."
     },
 
     "runner_attestation": {
       "type": "string",
       "minLength": 1,
-      "description": "v0.2 P-02. Opaque URI to an out-of-band execution attestation (Sigstore, in-toto, TEE). PRML records that an attestation was emitted; the URI is not interpreted by canonicalisation."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-02. Opaque URI to an out-of-band execution attestation (Sigstore, in-toto, TEE). PRML records that an attestation was emitted; the URI is not interpreted by canonicalisation."
     },
 
     "revoked_at": {
       "type": "string",
       "format": "date-time",
-      "description": "v0.2 P-03. Timestamp at which the publisher revoked this manifest. The hash still verifies; verifiers MUST surface revocation status separately from hash status."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-03. Timestamp at which the publisher revoked this manifest. The hash still verifies; verifiers MUST surface revocation status separately from hash status."
     },
 
     "revocation_reason": {
       "type": "string",
       "enum": ["dataset_compromised", "model_recalled", "author_request", "other"],
-      "description": "v0.2 P-03. Controlled vocabulary for the reason the publisher revoked the manifest."
+      "description": "RFC proposal, not adopted: v0.2 promotion is deferred (PRML-v0.2-RFC.md), and the reference implementations reject this field until it is. v0.2 P-03. Controlled vocabulary for the reason the publisher revoked the manifest."
     }
   },
 

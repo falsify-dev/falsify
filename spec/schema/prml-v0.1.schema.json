@@ -115,7 +115,7 @@
     },
     "model": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "id": {
           "type": "string",
@@ -132,7 +132,12 @@
           "description": "Optional canonical URL for the model artefact."
         }
       },
-      "description": "Optional model reference. Bind the manifest to a specific build."
+      "description": "Optional model reference. Bind the manifest to a specific build. Other keys (e.g. version) are allowed: spec §2.2 says only mapping."
+    },
+    "code": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Optional identifier of the code used to evaluate (e.g. a git commit or a script hash). Free-form mapping (spec §2.2; accepted by validators since the erratum of 2026-11-15, third part)."
     },
     "compute_envelope": {
       "type": "object",

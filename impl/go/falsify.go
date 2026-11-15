@@ -613,7 +613,7 @@ var hexAny64 = regexp.MustCompile(`^[0-9a-fA-F]{64}$`)
 var topLevelKeys = map[string]bool{
 	"version": true, "claim_id": true, "created_at": true, "metric": true,
 	"comparator": true, "threshold": true, "dataset": true, "seed": true,
-	"producer": true, "model": true, "compute_envelope": true,
+	"producer": true, "model": true, "compute_envelope": true, "code": true,
 	"prior_hash": true, "notes": true, "metric_args": true,
 }
 
@@ -745,7 +745,7 @@ func typeErrors(m map[string]interface{}) []string {
 			}
 		}
 	}
-	for _, f := range []string{"dataset", "producer", "model", "metric_args", "compute_envelope"} {
+	for _, f := range []string{"dataset", "producer", "model", "metric_args", "compute_envelope", "code"} {
 		if v, ok := m[f]; ok && !isMap(v) {
 			errs = append(errs, f+" must be a mapping")
 		}

@@ -501,7 +501,7 @@ def validate_manifest(m: dict) -> list[str]:
 # wherever a field is present (erratum 2026-11-15, second part). Before this, a
 # manifest with `comparator: null` or `dataset: "x"` locked and verified.
 _STRING_FIELDS = ("claim_id", "created_at", "metric", "comparator")
-_MAPPING_FIELDS = ("dataset", "producer", "model", "metric_args", "compute_envelope")
+_MAPPING_FIELDS = ("dataset", "producer", "model", "metric_args", "compute_envelope", "code")
 _SUB_STRING_FIELDS = {"dataset": ("id", "hash", "uri"), "producer": ("id", "signature"),
                       "model": ("id", "hash", "uri")}
 
@@ -550,7 +550,7 @@ _RFC3339 = re.compile(r"^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(\.\d+)?([Zz]|[+-
 _TOP_LEVEL_KEYS = {
     "version", "claim_id", "created_at", "metric", "comparator", "threshold",
     "dataset", "seed", "producer", "model", "compute_envelope", "prior_hash",
-    "notes", "metric_args",
+    "notes", "metric_args", "code",
 }
 
 

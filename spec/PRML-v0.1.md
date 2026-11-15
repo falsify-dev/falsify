@@ -191,6 +191,7 @@ following top-level keys:
 | `metric_args` | mapping | Free-form arguments parameterizing the metric. |
 | `model` | mapping | Identifier of the model under test, if known pre-run. |
 | `code` | mapping | Identifier of the code (e.g., git commit) used to evaluate. |
+| `compute_envelope` | mapping | Free-form description of compute conditions (precision, hardware class, software stack hash). Not used for the verdict. *(Listed 2026-11-15; the schema and every implementation already accepted it.)* |
 | `prior_hash` | string | Manifest hash of the previous claim in an amendment chain (§6). |
 | `notes` | string | Human-readable annotation. **MUST NOT** affect verification. |
 
@@ -1001,6 +1002,24 @@ Conformance is enforceable via the falsify reference test suite
 >    for `threshold` apply to the root mapping only; a `threshold` key inside
 >    `metric_args` renders by its spelling like any other number. The Python
 >    reference and the grammar already did this.
+
+> **v0.1 erratum (2026-11-15, third part): optional fields as §2.2 lists them,
+> TECHNICAL.** The text decides; the JSON Schemas and the validators follow it,
+> and only widen. No published vector, canonical byte or digest changes, and no
+> manifest that was valid before becomes invalid.
+>
+> 14. **`code` (§2.2).** `code` was listed as an optional mapping since the first
+>    draft, but the schemas and every validator rejected it as an unknown key. It
+>    is now accepted as a mapping; any other type is rejected with exit `2`.
+> 15. **`compute_envelope` (§2.2).** The schemas and every validator accepted it;
+>    §2.2 now lists it (editorial).
+> 16. **`model` (§2.2).** §2.2 says only *mapping*, and every validator accepted
+>    keys besides `id`, `hash` and `uri` (such as `version`). The schemas no
+>    longer forbid them. The v0.2 schema now lists `metric_args` and `code`, which
+>    it had left out, and marks the v0.2 RFC proposal fields (`prml_mode`,
+>    `value_method`, `sample_size`, the window fields, `runner_attestation`,
+>    `revoked_at`, `revocation_reason`) as not adopted: the reference
+>    implementations reject them until v0.2 is promoted.
 
 ---
 
