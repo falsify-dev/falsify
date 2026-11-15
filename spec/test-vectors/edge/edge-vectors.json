@@ -2412,5 +2412,50 @@
  "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"～": 1, "😀": 2}},
  "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  ～: 1\n  😀: 2\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
  "hash": "1ccc3940055991bafa5a3454731f16cebdd514bab92068ba6a9d99f9033b683e"
+},
+{
+ "id": "EV-109",
+ "source": "erratum-2026-11-15",
+ "title": "E2-nested-threshold-integer",
+ "description": "PRML v0.1 erratum 2026-11-15 (second part), rule C6/G4. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "metric_args": {"threshold": 1}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  threshold: 1\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "1d800b5311033dc4a942215dba79f582f7cfde149109493f7f109a1496d3d452"
+},
+{
+ "id": "EV-110",
+ "source": "erratum-2026-11-15",
+ "title": "E2-nested-threshold-float",
+ "description": "PRML v0.1 erratum 2026-11-15 (second part), rule C6/G4. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "metric_args": {"threshold": 1.0, "inner": {"threshold": 2}}, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  inner:\n    threshold: 2\n  threshold: 1.0\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "f4e2c2c9421b087dc141cabb89f84193557662a7b9ba0d826f641f1d8b7b5c3e"
+},
+{
+ "id": "EV-111",
+ "source": "erratum-2026-11-15",
+ "title": "E2-noncharacter-agreed",
+ "description": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.4. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "notes": "a﷐b"},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nnotes: a﷐b\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "a9d6046f67403efb6f888660af3663d09c88053d8b7d857d48f53c1d5a220c95"
+},
+{
+ "id": "EV-112",
+ "source": "erratum-2026-11-15",
+ "title": "E2-model-extra-key",
+ "description": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.2. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00Z", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}, "model": {"id": "m", "version": "2"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmodel:\n  id: m\n  version: '2'\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "129c516990fb00edc12a961852cf58373c35c114813dd91244bfe6b5d29d19a3"
+},
+{
+ "id": "EV-113",
+ "source": "erratum-2026-11-15",
+ "title": "E2-created-at-offset-reads",
+ "description": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1. The input is given exactly as written; its spelling is part of the case.",
+ "input": {"version": "prml/0.1", "claim_id": "01900000-0000-7000-8000-000000000000", "created_at": "2026-05-01T12:00:00+00:00", "metric": "accuracy", "comparator": ">=", "threshold": 0.85, "dataset": {"id": "ds", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}, "seed": 42, "producer": {"id": "falsify.dev"}},
+ "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00+00:00'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n",
+ "hash": "13ad142158c5d58475f30057a23af1cdc5d821e6090f14683bdbc2e18683356d"
 }
 ]

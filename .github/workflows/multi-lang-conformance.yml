@@ -5,10 +5,10 @@ name: Multi-language conformance
 # suite (8 vectors) byte-for-byte, AND rejects the negative suite (20
 # reject-vectors: control/non-portable chars, structural invalids, vacuous
 # bars, duplicate keys, non-NFC strings). Verification surface per run: 4 impls
-# × 21 positive vectors = 84 byte-for-byte agreements, plus 4 × 92 = 368 on the
-# §3.6 edge suite (spec/test-vectors/edge, added 2026-09-13), plus 40 rejection checks
-# from Python and JS (20 each) and 32 from Go and Rust (16 each — they read
-# JSON only, so the four YAML-only vectors are declared SKIP rather than
+# × 21 positive vectors = 84 byte-for-byte agreements, plus 4 × 113 = 452 on the
+# §3.6 edge suite (spec/test-vectors/edge, added 2026-09-13), plus 120 rejection checks
+# from Python and JS (60 each) and 76 from Go and Rust (38 each — they read
+# JSON only, so the 22 YAML-only vectors are declared SKIP rather than
 # counted as refusals they never made).
 #
 # A positive-suite failure is a portability regression; a reject-suite failure
@@ -98,7 +98,7 @@ jobs:
           sys.exit(10 if fails else 0)
           PY
 
-      - name: Conformance — edge suite (108 vectors, §3.6 grammar)
+      - name: Conformance — edge suite (113 vectors, §3.6 grammar)
         run: |
           python3 - <<'PY'
           import json, hashlib, sys
@@ -117,7 +117,7 @@ jobs:
           sys.exit(10 if fails else 0)
           PY
 
-      - name: Negative conformance — reject suite (40 reject-vectors MUST be rejected)
+      - name: Negative conformance — reject suite (60 reject-vectors MUST be rejected)
         # falsify_prml.py is THE PRML reference (validate_manifest); falsify.py is
         # the falsify-engine CLI (different schema) and would reject every input for
         # an unrelated reason, making this check vacuous.
@@ -139,7 +139,7 @@ jobs:
       - name: Conformance — v0.2 candidate suite (8 vectors)
         run: node impl/js/falsify.js test-vectors spec/test-vectors/v0.2/test-vectors.json
 
-      - name: Conformance — edge suite (108 vectors, §3.6 grammar)
+      - name: Conformance — edge suite (113 vectors, §3.6 grammar)
         run: node impl/js/falsify.js test-vectors spec/test-vectors/edge/edge-vectors.json
 
       # The JS impl reads YAML through js-yaml, an optional dependency. Without
@@ -149,7 +149,7 @@ jobs:
       - name: Install optional YAML dependency
         run: npm install --no-save js-yaml
 
-      - name: Negative conformance — reject suite (40 reject-vectors MUST be rejected)
+      - name: Negative conformance — reject suite (60 reject-vectors MUST be rejected)
         run: python3 spec/test-vectors/reject/check_reject.py -- node impl/js/falsify.js lock
 
       - uses: actions/setup-python@v7
@@ -184,10 +184,10 @@ jobs:
       - name: Conformance — v0.2 candidate suite (8 vectors)
         run: ./impl/go/falsify-go test-vectors spec/test-vectors/v0.2/test-vectors.json
 
-      - name: Conformance — edge suite (108 vectors, §3.6 grammar)
+      - name: Conformance — edge suite (113 vectors, §3.6 grammar)
         run: ./impl/go/falsify-go test-vectors spec/test-vectors/edge/edge-vectors.json
 
-      - name: Negative conformance — reject suite (24 JSON reject-vectors; 16 YAML skipped)
+      - name: Negative conformance — reject suite (38 JSON reject-vectors; 22 YAML skipped)
         run: python3 spec/test-vectors/reject/check_reject.py --reads json -- ./impl/go/falsify-go hash
 
       - uses: actions/setup-python@v7
@@ -232,10 +232,10 @@ jobs:
       - name: Conformance — v0.2 candidate suite (8 vectors)
         run: ./impl/rust/target/release/falsify-rs test-vectors spec/test-vectors/v0.2/test-vectors.json
 
-      - name: Conformance — edge suite (108 vectors, §3.6 grammar)
+      - name: Conformance — edge suite (113 vectors, §3.6 grammar)
         run: ./impl/rust/target/release/falsify-rs test-vectors spec/test-vectors/edge/edge-vectors.json
 
-      - name: Negative conformance — reject suite (24 JSON reject-vectors; 16 YAML skipped)
+      - name: Negative conformance — reject suite (38 JSON reject-vectors; 22 YAML skipped)
         run: python3 spec/test-vectors/reject/check_reject.py --reads json -- ./impl/rust/target/release/falsify-rs hash
 
       - uses: actions/setup-python@v7
@@ -273,4 +273,4 @@ jobs:
             echo "    in spec/analysis/canonicalization-portability-v0.1.md."
             exit 1
           fi
-          echo "::notice::All four reference implementations passed all 21 positive vectors and all 108 edge vectors byte-for-byte and rejected the reject suite (40 vectors from Python and JS; 24 from the JSON-only Go and Rust)."
+          echo "::notice::All four reference implementations passed all 21 positive vectors and all 113 edge vectors byte-for-byte and rejected the reject suite (60 vectors from Python and JS; 38 from the JSON-only Go and Rust)."

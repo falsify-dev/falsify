@@ -618,5 +618,205 @@
     ],
     "ext": "json",
     "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}} {\"x\": 1}"
+  },
+  {
+    "id": "RJ-041",
+    "title": "Y-reject-key-int",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.1.",
+    "field": "-",
+    "expect": "mapping keys must be strings",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  1: a\n"
+  },
+  {
+    "id": "RJ-042",
+    "title": "Y-reject-key-bool",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.1.",
+    "field": "-",
+    "expect": "mapping keys must be strings",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  true: a\n"
+  },
+  {
+    "id": "RJ-043",
+    "title": "Y-reject-key-null",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.1.",
+    "field": "-",
+    "expect": "mapping keys must be strings",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  null: a\n"
+  },
+  {
+    "id": "RJ-044",
+    "title": "Y-reject-key-float",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.1.",
+    "field": "-",
+    "expect": "mapping keys must be strings",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  1.5: a\n"
+  },
+  {
+    "id": "RJ-045",
+    "title": "Y-reject-key-sequence",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.1.",
+    "field": "-",
+    "expect": "mapping keys must be strings",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  ? [a, b]\n  : c\n"
+  },
+  {
+    "id": "RJ-046",
+    "title": "Y-reject-key-mapping",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.1.",
+    "field": "-",
+    "expect": "mapping keys must be strings",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  ? {a: 1}\n  : c\n"
+  },
+  {
+    "id": "RJ-047",
+    "title": "J-reject-noncharacter-FFFE",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.4.",
+    "field": "-",
+    "expect": "control / non-portable character",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\ufffeb\", \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-048",
+    "title": "J-reject-noncharacter-FFFF",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.4.",
+    "field": "-",
+    "expect": "control / non-portable character",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\uffffb\", \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-049",
+    "title": "J-reject-noncharacter-10FFFF",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 3.4.",
+    "field": "-",
+    "expect": "control / non-portable character",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\udbff\\udfffb\", \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-050",
+    "title": "J-reject-type-comparator-null",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "comparator must be a string",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": null, \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-051",
+    "title": "J-reject-type-metric-number",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "metric must be a string",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": 123, \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-052",
+    "title": "J-reject-type-dataset-string",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "dataset must be a mapping",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": \"x\", \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-053",
+    "title": "J-reject-type-producer-null",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "producer must be a mapping",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": null}"
+  },
+  {
+    "id": "RJ-054",
+    "title": "J-reject-type-claim-id-number",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "claim_id must be a string",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": 5, \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-055",
+    "title": "J-reject-type-created-at-number",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "created_at must be a string",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": 5, \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}"
+  },
+  {
+    "id": "RJ-056",
+    "title": "J-reject-type-producer-id-number",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "producer.id must be a string",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": 7}}"
+  },
+  {
+    "id": "RJ-057",
+    "title": "J-reject-type-model-string",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "model must be a mapping",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"model\": \"m\"}"
+  },
+  {
+    "id": "RJ-058",
+    "title": "J-reject-type-metric-args-list",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "metric_args must be a mapping",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"metric_args\": [1]}"
+  },
+  {
+    "id": "RJ-059",
+    "title": "J-reject-type-notes-null",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "notes must be a string",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"notes\": null}"
+  },
+  {
+    "id": "RJ-060",
+    "title": "J-reject-type-prior-hash-null",
+    "category": "erratum-2026-11-15",
+    "reason": "PRML v0.1 erratum 2026-11-15 (second part), rule 2.1.",
+    "field": "-",
+    "expect": "prior_hash must be 64 hex characters",
+    "ext": "json",
+    "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"prior_hash\": null}"
   }
 ]

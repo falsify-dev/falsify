@@ -1,4 +1,4 @@
-# Edge suite — §3.6 grammar edge cases (108 vectors)
+# Edge suite — §3.6 grammar edge cases (113 vectors)
 
 **Added 2026-09-13.** Same file format as `../v0.1/test-vectors.json` (`id`,
 `title`, `description`, `input`, `canonical`, `hash`); every reference
@@ -30,10 +30,14 @@ suite can grow as the grammar exposes more edges without renumbering Appendix B.
   (C4), negative zero, numbers kept by spelling or read by value (C6), the
   largest `seed`, strings starting `---` or `...`, long and empty keys,
   `constructor`-family keys, and code-point key order. The input is embedded
-  exactly as written, because its spelling is part of the case.
+  exactly as written, because its spelling is part of the case;
+- 5 (EV-109..EV-113, second part of the same erratum): a nested `threshold`
+  rendered by its spelling (integer and float, G4), a noncharacter that stays
+  allowed (U+FDD0), a `model` with a key besides `id`, and a `created_at`
+  written with an offset, which `hash` still reads.
 
 Expected bytes and hashes are those of the reference canonicalizer and of the
-from-grammar emitter `spec/grammar/check_grammar.py`, which agree on all 108.
+from-grammar emitter `spec/grammar/check_grammar.py`, which agree on all 113.
 
 ## The case that was a decision, not a bug
 

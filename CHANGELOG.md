@@ -6,6 +6,13 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-11-15
+
+### Added
+- **Conformance vectors for the second part of the erratum**: edge suite
+  EV-109..EV-113 (108 → 113) and reject suite RJ-041..RJ-060 (40 → 60; 6 of the
+  new 20 are YAML-only, so 22 of the 60). No existing vector changed.
+
 ### Changed (PRML v0.1 erratum 2026-11-15, second part)
 - **Mapping keys must be strings.** A YAML key read as a number, boolean, null,
   sequence or mapping (`1:`, `true:`, `~:`, `? [a, b]`) is rejected with exit 2;
