@@ -176,7 +176,7 @@ following top-level keys:
 |---|---|---|
 | `version` | string | Spec version. **MUST** equal `"prml/0.1"` for this revision. |
 | `claim_id` | string | UUIDv7 identifier for the claim. **MUST** be unique per producer. |
-| `created_at` | string | RFC 3339 timestamp in UTC, second precision. |
+| `created_at` | string | RFC 3339 timestamp in UTC, second precision. A new manifest writes it as `YYYY-MM-DDTHH:MM:SSZ` (erratum 2026-11-15). |
 | `metric` | string | Identifier of the metric being claimed. See §2.3.1. |
 | `comparator` | string | One of `>=`, `>`, `==`, `<=`, `<`. See §5.1. |
 | `threshold` | number | Real number the metric is compared against. |
@@ -392,6 +392,7 @@ code points:
 - U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR)
 - U+FEFF (BYTE ORDER MARK / ZERO WIDTH NO-BREAK SPACE)
 - U+D800–U+DFFF (lone surrogates; erratum 2026-11-15)
+- U+FFFE, U+FFFF and U+10FFFF (erratum 2026-11-15, second part)
 
 These code points serialize ambiguously or invisibly and would let two
 visually identical manifests hash differently. A manifest containing any of
@@ -967,6 +968,39 @@ Conformance is enforceable via the falsify reference test suite
 > Unchanged: negative zero renders `-0.0` (C4); a string beginning `---` or
 > `...` renders by the plain-scalar predicate (C5), so `notes: ...more` is plain.
 > The Python reference now follows both where it had departed.
+
+> **v0.1 erratum (2026-11-15, second part): keys, three code points, field
+> types, nested `threshold`, TECHNICAL.** The same review left six inputs on
+> which the reference implementations still differed or which locked without
+> meaning anything. No published vector, canonical byte or digest changes.
+> Items 9, 10 and 13 touch only inputs on which the implementations disagreed.
+> Item 11 rejects manifests the published schema never allowed, some of which all
+> four implementations used to accept (`comparator: null`). Item 12 applies to
+> manifests being locked now, not to verifying earlier ones.
+>
+> 9. **Mapping keys (§3.1).** A mapping key **MUST** be a string. A YAML key read
+>    as a number, boolean, null, sequence or mapping (`1:`, `true:`, `~:`,
+>    `? [a, b]`) **MUST** be rejected with exit `2`; quoted (`'1':`), it is a
+>    string. JSON keys are always strings.
+> 10. **U+FFFE, U+FFFF and U+10FFFF (§3.4).** These three code points join the
+>    prohibited set: YAML emitters disagree on them and the grammar has no form
+>    for them. The other 63 Unicode noncharacters are unchanged; every reference
+>    implementation renders them alike.
+> 11. **Field types (§2.1, §2.2).** A field that is present **MUST** have the type
+>    the published schema gives it: `claim_id`, `created_at`, `metric`,
+>    `comparator`, `prior_hash`, `notes` and the `id`, `hash`, `uri` and
+>    `signature` members are strings; `dataset`, `producer`, `model`,
+>    `metric_args` and `compute_envelope` are mappings. `notes: null` and
+>    `prior_hash: null` are rejected: an optional field is either absent or a
+>    string. The schema's `seed` now matches §2.1 (no negative branch).
+> 12. **`created_at` in a new manifest (§2.1).** A manifest being locked or
+>    committed now **MUST** write `created_at` as `YYYY-MM-DDTHH:MM:SSZ`. A
+>    verifier still reads any RFC 3339 spelling, so a manifest locked earlier
+>    keeps its hash and stays verifiable.
+> 13. **Nested `threshold` (grammar C6, G4).** The float-field and by-value rules
+>    for `threshold` apply to the root mapping only; a `threshold` key inside
+>    `metric_args` renders by its spelling like any other number. The Python
+>    reference and the grammar already did this.
 
 ---
 

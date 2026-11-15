@@ -254,6 +254,10 @@ fn render_mapping(map: &serde_json::Map<String, Value>, indent: usize, version: 
         // §C5 applies to keys as well as values (spec/grammar/README.md): a key
         // that is not a plain scalar renders single-quoted, as a value would.
         let rk: String = if needs_quoting(k) { quote_single(k) } else { k.clone() };
+        // The float-field rule applies to the root `threshold` only (grammar G4,
+        // erratum 2026-11-15); a nested `threshold` renders by its spelling (C6).
+        // A linkage record's `result.observed` keeps its own float rule.
+        let field: &str = if indent != 0 && k == "threshold" { "" } else { k.as_str() };
         if indent == 0 && k == "threshold" && version == "prml/0.2" {
             if let Value::Number(n) = v {
                 lines.push(format!("{}{}: {}", pad, rk, render_threshold_v02(n)));
@@ -295,12 +299,12 @@ fn render_mapping(map: &serde_json::Map<String, Value>, indent: usize, version: 
                         }
                         lines.push(nested_lines.join("\n"));
                     } else {
-                        lines.push(format!("{}- {}", pad, render_scalar(item, k, version)));
+                        lines.push(format!("{}- {}", pad, render_scalar(item, field, version)));
                     }
                 }
             }
             _ => {
-                lines.push(format!("{}{}: {}", pad, rk, render_scalar(v, k, version)));
+                lines.push(format!("{}{}: {}", pad, rk, render_scalar(v, field, version)));
             }
         }
     }
@@ -458,7 +462,9 @@ fn first_diff(a: &str, b: &str) -> i64 {
 // YAML engines, so a manifest carrying them is non-portable. Rejecting is
 // additive — no conformance vector contains them. Mirrors the Python reference.
 fn is_forbidden_char(c: char) -> bool {
-    matches!(c, '\u{0}'..='\u{1f}' | '\u{7f}'..='\u{9f}' | '\u{2028}' | '\u{2029}' | '\u{feff}')
+    // U+FFFE, U+FFFF and U+10FFFF are refused too (erratum 2026-11-15, second part).
+    matches!(c, '\u{0}'..='\u{1f}' | '\u{7f}'..='\u{9f}' | '\u{2028}' | '\u{2029}' | '\u{feff}'
+        | '\u{fffe}' | '\u{ffff}' | '\u{10ffff}')
 }
 
 // forbidden_char_fields walks a parsed manifest and returns the dotted paths of
@@ -657,13 +663,43 @@ fn validate_manifest(parsed: &Value) -> Vec<String> {
     }
     for fld in forbidden_char_fields(parsed, "") {
         errs.push(format!("{}: contains a control / non-portable character \
-            (C0/C1, U+007F, U+2028/U+2029, or U+FEFF) — not allowed in a PRML string field", fld));
+            (C0/C1, U+007F, U+2028/U+2029, U+FEFF, U+FFFE/U+FFFF/U+10FFFF or a lone surrogate) — not allowed in a PRML string field", fld));
     }
     for fld in non_nfc_fields(parsed, "") {
         errs.push(format!("{}: string is not in Unicode NFC — the same text in a \
             different normalization form hashes differently; normalize to NFC", fld));
     }
+    errs.extend(type_errors(map));
     errs.extend(schema_conformance_errors(map));
+    errs
+}
+
+// Field types of the published schema, checked wherever a field is present
+// (erratum 2026-11-15, second part). Same messages as the other references.
+fn type_errors(map: &serde_json::Map<String, Value>) -> Vec<String> {
+    let mut errs = Vec::new();
+    for f in ["claim_id", "created_at", "metric", "comparator"] {
+        if let Some(v) = map.get(f) {
+            if !v.is_string() { errs.push(format!("{} must be a string", f)); }
+        }
+    }
+    for f in ["dataset", "producer", "model", "metric_args", "compute_envelope"] {
+        if let Some(v) = map.get(f) {
+            if !v.is_object() { errs.push(format!("{} must be a mapping", f)); }
+        }
+    }
+    let subs: [(&str, &[&str]); 3] = [("dataset", &["id", "hash", "uri"]),
+        ("producer", &["id", "signature"]), ("model", &["id", "hash", "uri"])];
+    for (f, ks) in subs {
+        if let Some(Value::Object(sub)) = map.get(f) {
+            for k in ks {
+                if let Some(v) = sub.get(*k) {
+                    if !v.is_string() { errs.push(format!("{}.{} must be a string", f, k)); }
+                }
+            }
+        }
+    }
+    // `model` keeps its other keys (`version` is common): only the types are checked.
     errs
 }
 

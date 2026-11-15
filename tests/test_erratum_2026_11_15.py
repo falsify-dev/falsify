@@ -16,6 +16,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -104,6 +105,36 @@ class TestOtherImplementations(unittest.TestCase):
                         self.assertEqual(r.returncode, 0, f"{name} rejected: {r.stderr.strip()[:200]}")
                         want = hashlib.sha256(case["canonical"].encode("utf-8")).hexdigest()
                         self.assertEqual(r.stdout.strip().splitlines()[-1], want)
+
+
+class TestLockCreatedAt(unittest.TestCase):
+    """Second part of the erratum: `lock` takes created_at only as YYYY-MM-DDTHH:MM:SSZ;
+    `hash` keeps reading manifests locked earlier in another RFC 3339 spelling."""
+
+    def _manifest(self, created_at):
+        case = next(c for c in CASES if c["id"] == "E2-created-at-offset-reads")
+        m = json.loads(case["input"])
+        m["created_at"] = created_at
+        p = Path(tempfile.mkdtemp(dir=_TMP)) / "claim.json"
+        p.write_text(json.dumps(m), encoding="utf-8")
+        return p
+
+    def _clis(self):
+        clis = [("python", [sys.executable, str(ROOT / "falsify_prml.py")])]
+        if shutil.which("node"):
+            clis.append(("js", [shutil.which("node"), str(ROOT / "impl" / "js" / "falsify.js")]))
+        return clis
+
+    def test_lock_refuses_other_spellings_hash_reads_them(self):
+        for name, cli in self._clis():
+            for spelling in ("2026-05-01T12:00:00+00:00", "2026-05-01T12:00:00.000Z", "2026-05-01t12:00:00z"):
+                with self.subTest(impl=name, created_at=spelling):
+                    p = self._manifest(spelling)
+                    self.assertEqual(subprocess.run(cli + ["lock", str(p)], capture_output=True).returncode, 2)
+                    self.assertEqual(subprocess.run(cli + ["hash", str(p)], capture_output=True).returncode, 0)
+            with self.subTest(impl=name, created_at="canonical"):
+                p = self._manifest("2026-05-01T12:00:00Z")
+                self.assertEqual(subprocess.run(cli + ["lock", str(p)], capture_output=True).returncode, 0)
 
 
 class TestLegacyCliDuplicateKeys(unittest.TestCase):

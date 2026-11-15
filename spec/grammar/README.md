@@ -182,20 +182,19 @@ bytes for CV-V2b were updated to the decided rule (see its `note`).
 
 ## Gaps this grammar makes visible (for v0.3, not changed here)
 
-- **G1** §3.4 does not name U+FFFE, U+FFFF and U+10FFFF. The reference emitter
-  would double-quote a string containing them; the grammar has no double-quoted
-  production, so such a string has no canonical form today. v0.3 should add them
-  to the prohibited set (a MUST-reject, hence a reject vector, hence not an
-  erratum-level change).
+- **G1** (resolved 2026-11-15) §3.4 did not name U+FFFE, U+FFFF and U+10FFFF.
+  The reference emitter double-quoted a string containing them and the grammar
+  has no double-quoted production. The second part of the erratum of 2026-11-15
+  adds them to the prohibited set; the other 63 noncharacters render alike in all
+  four implementations and stay allowed.
 - **G2** Sequences are informative (C7) until a vector exercises them.
 - **G3** The grammar bounds nothing about `metric_args` beyond C1–C6; a v0.3
   profile may wish to restrict its depth.
-- **G4** The by-value/float-field rules of C6 are applied at the **root mapping
-  only** by the Python reference and by `check_grammar.py`; JavaScript, Go and
-  Rust apply the v0.1 float hint to any key named `threshold` at any depth. The
-  two agree on every schema-valid manifest (nested `threshold` can only occur
-  inside free-form `metric_args`), so no vector distinguishes them yet. A v0.3
-  vector should.
+- **G4** (resolved 2026-11-15) The by-value/float-field rules of C6 apply at the
+  **root mapping only**, as the Python reference and `check_grammar.py` always
+  did; JavaScript, Go and Rust applied the v0.1 float hint to any key named
+  `threshold` at any depth and now follow the root-only rule (erratum
+  2026-11-15, second part). A nested `threshold` renders by its spelling.
 - **G5** (resolved, unreleased) Go rendered non-integral floats from the raw
   JSON text rather than from the value. It now reads every decimal or exponent
   spelling as a float64 and renders it by C4, as the other implementations do.

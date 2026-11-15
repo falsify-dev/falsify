@@ -69,8 +69,9 @@ _HEX64 = re.compile(r"^[0-9a-f]{64}$")
 # Rejecting them is additive: no conformance vector contains these, so no valid
 # manifest's hash changes. Printable Unicode (emoji, CJK, accents) is unaffected.
 # A lone surrogate (JSON "\ud800" with no pair) has no UTF-8 encoding and is
-# refused for the same reason.
-_FORBIDDEN_CHARS = re.compile(r"[\x00-\x1f\x7f-\x9f  ﻿\ud800-\udfff]")
+# refused for the same reason, and so are U+FFFE, U+FFFF and U+10FFFF, which YAML
+# emitters disagree on (erratum 2026-11-15, second part).
+_FORBIDDEN_CHARS = re.compile(r"[\x00-\x1f\x7f-\x9f  ﻿\ud800-\udfff\ufffe\uffff\U0010ffff]")
 
 
 def _bad_char_fields(obj, path="") -> list[str]:
@@ -283,6 +284,14 @@ def _core_loader():
             seen = set()
             for key_node, _ in node.value:
                 key = self.construct_object(key_node, deep=deep)
+                if not isinstance(key, str):
+                    # A number, boolean, null or collection key reads differently in
+                    # each YAML library and has no canonical form (erratum 2026-11-15).
+                    raise yaml.constructor.ConstructorError(
+                        "while constructing a mapping", node.start_mark,
+                        f"mapping keys must be strings (quote the key): got {key!r}",
+                        key_node.start_mark,
+                    )
                 try:
                     hashable = key in seen
                 except TypeError:  # unhashable key — the base class will reject it
@@ -478,13 +487,56 @@ def validate_manifest(m: dict) -> list[str]:
                 errors.append(f"missing required field: producer.{f}")
     for fld in _bad_char_fields(m):
         errors.append(f"{fld}: contains a control / non-portable character "
-                      f"(C0/C1, U+007F, U+2028/U+2029, or U+FEFF) — not allowed in a PRML string field")
+                      f"(C0/C1, U+007F, U+2028/U+2029, U+FEFF, U+FFFE/U+FFFF/U+10FFFF or a lone surrogate) — not allowed in a PRML string field")
     for fld in _non_nfc_fields(m):
         errors.append(f"{fld}: string is not in Unicode NFC — the same text in a "
                       f"different normalization form hashes differently; normalize to NFC")
     errors.extend(_structural_errors(m))
+    errors.extend(_type_errors(m))
     errors.extend(_schema_conformance_errors(m))
     return errors
+
+
+# Field types of the published schema (spec/schema/prml-v0.*.schema.json), checked
+# wherever a field is present (erratum 2026-11-15, second part). Before this, a
+# manifest with `comparator: null` or `dataset: "x"` locked and verified.
+_STRING_FIELDS = ("claim_id", "created_at", "metric", "comparator")
+_MAPPING_FIELDS = ("dataset", "producer", "model", "metric_args", "compute_envelope")
+_SUB_STRING_FIELDS = {"dataset": ("id", "hash", "uri"), "producer": ("id", "signature"),
+                      "model": ("id", "hash", "uri")}
+
+
+def _type_errors(m: dict) -> list[str]:
+    errors: list[str] = []
+    for f in _STRING_FIELDS:
+        if f in m and not isinstance(m[f], str):
+            errors.append(f"{f} must be a string")
+    for f in _MAPPING_FIELDS:
+        if f in m and not isinstance(m[f], dict):
+            errors.append(f"{f} must be a mapping")
+    for f, subs in _SUB_STRING_FIELDS.items():
+        sub = m.get(f)
+        if isinstance(sub, dict):
+            for k in subs:
+                if k in sub and not isinstance(sub[k], str):
+                    errors.append(f"{f}.{k} must be a string")
+    # `model` keeps its other keys (`version` is common): only the types are checked.
+    return errors
+
+
+# A new manifest carries `created_at` in one spelling (spec §2.1: UTC, second
+# precision). `lock` enforces it; `hash` and `verify` still read manifests locked
+# before 2026-11-15 in any RFC 3339 spelling, so their hashes stay verifiable.
+_CREATED_AT_NEW = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+
+
+def new_manifest_errors(m: dict) -> list[str]:
+    """Extra checks for a manifest being locked now (not for verifying an old one)."""
+    ca = m.get("created_at")
+    if isinstance(ca, str) and not _CREATED_AT_NEW.match(ca):
+        return [f"created_at must be written YYYY-MM-DDTHH:MM:SSZ (UTC, second precision) "
+                f"in a new manifest, got {ca!r}"]
+    return []
 
 
 # Full published-schema conformance (spec/schema/prml-v0.1.schema.json).
@@ -533,10 +585,10 @@ def _schema_conformance_errors(m: dict) -> list[str]:
             if k not in ("id", "signature"):
                 errors.append(f"producer.{k}: unknown field (schema additionalProperties: false)")
     ph = m.get("prior_hash")
-    if ph is not None and not (isinstance(ph, str) and re.fullmatch(r"[0-9a-fA-F]{64}", ph)):
+    if "prior_hash" in m and not (isinstance(ph, str) and re.fullmatch(r"[0-9a-fA-F]{64}", ph)):
         errors.append("prior_hash must be 64 hex characters")
     notes = m.get("notes")
-    if notes is not None and not (isinstance(notes, str) and len(notes) <= 4096):
+    if "notes" in m and not (isinstance(notes, str) and len(notes) <= 4096):
         errors.append("notes must be a string of at most 4096 characters")
     for k in m:
         if k not in _TOP_LEVEL_KEYS:
@@ -622,7 +674,7 @@ def cmd_lock(args) -> int:
         m = load_manifest(args.spec)
     except (OSError, ValueError) as e:
         return _json_fail(args, EXIT_BAD, f"lock: cannot read {args.spec}: {e}\n")
-    errors = validate_manifest(m)
+    errors = validate_manifest(m) or new_manifest_errors(m)
     if errors:
         return _json_fail(args, EXIT_BAD, "lock: invalid manifest:\n  - " + "\n  - ".join(errors) + "\n")
     h = manifest_hash(m)

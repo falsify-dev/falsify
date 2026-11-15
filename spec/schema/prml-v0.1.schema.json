@@ -90,15 +90,10 @@
           "maximum": 18446744073709551615
         },
         {
-          "type": "integer",
-          "minimum": -9223372036854775808,
-          "maximum": -1
-        },
-        {
           "type": "null"
         }
       ],
-      "description": "RNG seed used in the evaluation. Accepts uint64 (most common, e.g. NumPy/PyTorch) or int64 (negative seeds in some C/Go runtimes). May be null for non-deterministic systems (live streams, online RLHF)."
+      "description": "RNG seed used in the evaluation. A non-negative 64-bit integer (spec §2.1); a negative seed is rejected (erratum 2026-11-15). May be null for non-deterministic systems (live streams, online RLHF)."
     },
     "producer": {
       "type": "object",

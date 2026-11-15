@@ -6,6 +6,25 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed (PRML v0.1 erratum 2026-11-15, second part)
+- **Mapping keys must be strings.** A YAML key read as a number, boolean, null,
+  sequence or mapping (`1:`, `true:`, `~:`, `? [a, b]`) is rejected with exit 2;
+  quote it for a string. Python and JavaScript used to write such keys differently.
+- **U+FFFE, U+FFFF and U+10FFFF are rejected** in any string or key, as the other
+  non-portable characters are. The other Unicode noncharacters stay allowed.
+- **Field types are checked** in all four implementations, as the published schema
+  states them: `comparator: null`, `metric: 123`, `dataset: "x"` and similar
+  manifests no longer lock or verify. `notes: null` and `prior_hash: null` are
+  rejected by the Python reference too. `model` is checked for its type only,
+  as before. The schemas' `seed` no longer has a negative branch, matching §2.1.
+- **`lock` requires `created_at` as `YYYY-MM-DDTHH:MM:SSZ`.** `hash` and `verify`
+  still read any RFC 3339 spelling, so manifests locked earlier keep their hash.
+- **A nested `threshold`** (inside `metric_args`) renders by its spelling in
+  `impl/js`, `impl/go` and `impl/rust`, as the Python reference and the grammar
+  already did (grammar G4). Their hashes change for such manifests only.
+- Tests: the shared erratum fixture grows to 67 cases (40 rejections), with a
+  `lock` test for `created_at`.
+
 ## [0.6.0] — 2026-11-15
 
 ### Added

@@ -36,10 +36,10 @@ is what the Go and Rust references are.
 | Canonical byte sequence | **`grammar/prml-canonical.abnf`** + **`grammar/README.md` C1–C8** (normative, §3.6) | The prose of §3 is secondary to these |
 | Plain vs single-quoted strings | `grammar/README.md` **C5**, predicate P1–P6 with the YAML 1.1 resolver patterns verbatim | Transcribe the patterns. Do not approximate them. |
 | Float spelling | `grammar/README.md` **C4** | Shortest round-trip digits; decimal for −4 ≤ e < 16, exponent form otherwise; `1.0e-05` not `1e-05`; a tie takes the even last digit |
-| Reading YAML input | PRML-v0.1.md erratum 2026-11-15 | A plain scalar is a number only when spelled as a JSON number; other numeric-looking plain scalars and unquoted timestamps are rejected; a float spelled `1.0` stays a float |
+| Reading YAML input | PRML-v0.1.md erratum 2026-11-15 | A plain scalar is a number only when spelled as a JSON number; other numeric-looking plain scalars and unquoted timestamps are rejected; a float spelled `1.0` stays a float; a mapping key must be a string |
 | Empty mapping / sequence | `grammar/README.md` **C8** | `key: {}`, `key: []`, `- {}` |
-| `threshold` rendering | `grammar/README.md` **C6** | v0.1: always float. v0.2: by value — integral and below 2^53 → integer, otherwise float |
-| What to reject | PRML-v0.1.md §3.2.1, §3.4, §3.5, erratum 2026-11-15; `test-vectors/reject/README.md` | Duplicate keys, non-portable characters (lone surrogates included), non-NFC strings, non-finite numbers, `seed` outside 0 to 2^64-1, a sequence inside a sequence, nesting deeper than 100 levels |
+| `threshold` rendering | `grammar/README.md` **C6** | v0.1: always float. v0.2: by value — integral and below 2^53 → integer, otherwise float. Root mapping only: a nested `threshold` renders by its spelling (G4) |
+| What to reject | PRML-v0.1.md §3.2.1, §3.4, §3.5, erratum 2026-11-15; `test-vectors/reject/README.md` | Duplicate keys, non-string YAML keys, non-portable characters (lone surrogates and U+FFFE, U+FFFF, U+10FFFF included), non-NFC strings, non-finite numbers, `seed` outside 0 to 2^64-1, a field of the wrong type (schema), a sequence inside a sequence, nesting deeper than 100 levels. When locking: `created_at` not written `YYYY-MM-DDTHH:MM:SSZ` |
 | Exit codes | PRML-v0.1.md §7 | 0 pass · 10 fail · 3 tampered · 11 guard · 2 bad input |
 
 The reference implementations are **conforming implementations of the grammar,

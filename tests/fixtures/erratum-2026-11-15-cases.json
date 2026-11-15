@@ -1,5 +1,5 @@
 {
- "description": "Regression cases for the PRML v0.1 erratum of 2026-11-15 (spec/PRML-v0.1.md, Change Log). canonical null means the input MUST be rejected with exit code 2. Not a conformance suite: no count on any public surface refers to this file.",
+ "description": "Regression cases for the PRML v0.1 erratum of 2026-11-15, both parts (spec/PRML-v0.1.md, Change Log). canonical null means the input MUST be rejected with exit code 2. Not a conformance suite: no count on any public surface refers to this file.",
  "cases": [
   {
    "id": "C8-empty-mapping",
@@ -286,6 +286,188 @@
    "rule": "RFC 8259",
    "format": "json",
    "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}} {\"x\": 1}",
+   "canonical": null
+  },
+  {
+   "id": "E2-nested-threshold-integer",
+   "rule": "C6/G4",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"metric_args\": {\"threshold\": 1}}",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  threshold: 1\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "E2-nested-threshold-float",
+   "rule": "C6/G4",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"metric_args\": {\"threshold\": 1.0, \"inner\": {\"threshold\": 2}}, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  inner:\n    threshold: 2\n  threshold: 1.0\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "E2-noncharacter-agreed",
+   "rule": "3.4",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"notes\": \"a﷐b\"}",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nnotes: a﷐b\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "E2-model-extra-key",
+   "rule": "2.2",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"model\": {\"id\": \"m\", \"version\": \"2\"}}",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmodel:\n  id: m\n  version: '2'\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "E2-created-at-offset-reads",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00+00:00\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00+00:00'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "Y-quoted-keys-are-strings",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  '1': a\n  'true': b\n  'null': c\n",
+   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  '1': a\n  'null': c\n  'true': b\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+  },
+  {
+   "id": "Y-reject-key-int",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  1: a\n",
+   "canonical": null
+  },
+  {
+   "id": "Y-reject-key-bool",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  true: a\n",
+   "canonical": null
+  },
+  {
+   "id": "Y-reject-key-null",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  null: a\n",
+   "canonical": null
+  },
+  {
+   "id": "Y-reject-key-float",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  1.5: a\n",
+   "canonical": null
+  },
+  {
+   "id": "Y-reject-key-sequence",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  ? [a, b]\n  : c\n",
+   "canonical": null
+  },
+  {
+   "id": "Y-reject-key-mapping",
+   "rule": "3.1",
+   "format": "yaml",
+   "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  ? {a: 1}\n  : c\n",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-noncharacter-FFFE",
+   "rule": "3.4",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\ufffeb\", \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-noncharacter-FFFF",
+   "rule": "3.4",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\uffffb\", \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-noncharacter-10FFFF",
+   "rule": "3.4",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"notes\": \"a\\udbff\\udfffb\", \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-comparator-null",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": null, \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-metric-number",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": 123, \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-dataset-string",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": \"x\", \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-producer-null",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": null}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-claim-id-number",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": 5, \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-created-at-number",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": 5, \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-producer-id-number",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": 7}}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-model-string",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"model\": \"m\"}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-metric-args-list",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"metric_args\": [1]}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-notes-null",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"notes\": null}",
+   "canonical": null
+  },
+  {
+   "id": "J-reject-type-prior-hash-null",
+   "rule": "2.1",
+   "format": "json",
+   "input": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"prior_hash\": null}",
    "canonical": null
   }
  ]

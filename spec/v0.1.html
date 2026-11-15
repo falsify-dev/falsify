@@ -260,7 +260,7 @@ footer.colophon a:hover { color: var(--ink); }
   <figcaption style="margin-top: 10px; font-size: 13px; color: var(--ink-3, #5a6677); font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: 0.02em;">60-second walkthrough: what a client receives at AI handover. A completed acceptance record (illustrative, demo signatures); every receipt shown is public at registry.falsify.dev. Live at <a href="https://spec.falsify.dev/demo/" style="color: var(--ink-2);">/demo</a>.</figcaption>
 </figure>
 
-<article id="content" data-prerendered="sha256:b667989c2b9d5a4bd6b809f0dfdd4642d76933ab6bede9029b1cf3ff50b35256">
+<article id="content" data-prerendered="sha256:2da9a7cd6b24f2557306432cb6e76f7c4d4304d2761f0f1234e16b91261d6d2d">
 <!-- prerender: PRML-v0.1.md · marked 12.0.2 · scripts/spec-prerender.mjs — ÜRETİLMİŞ, elle düzeltme; .md düzelt ve --write koş -->
 <h1 id="prml-pre-registered-ml-manifest-specification">PRML — Pre-Registered ML Manifest Specification</h1>
 <p><strong>Version:</strong> 0.1 (Draft)
@@ -439,7 +439,7 @@ following top-level keys:</p>
 <tr>
 <td><code>created_at</code></td>
 <td>string</td>
-<td>RFC 3339 timestamp in UTC, second precision.</td>
+<td>RFC 3339 timestamp in UTC, second precision. A new manifest writes it as <code>YYYY-MM-DDTHH:MM:SSZ</code> (erratum 2026-11-15).</td>
 </tr>
 <tr>
 <td><code>metric</code></td>
@@ -677,6 +677,7 @@ code points:</p>
 <li>U+2028 (LINE SEPARATOR) and U+2029 (PARAGRAPH SEPARATOR)</li>
 <li>U+FEFF (BYTE ORDER MARK / ZERO WIDTH NO-BREAK SPACE)</li>
 <li>U+D800–U+DFFF (lone surrogates; erratum 2026-11-15)</li>
+<li>U+FFFE, U+FFFF and U+10FFFF (erratum 2026-11-15, second part)</li>
 </ul>
 <p>These code points serialize ambiguously or invisibly and would let two
 visually identical manifests hash differently. A manifest containing any of
@@ -1294,6 +1295,41 @@ last digit is even is used (<code>87320258963721.625</code> renders
 <p>Unchanged: negative zero renders <code>-0.0</code> (C4); a string beginning <code>---</code> or
 <code>...</code> renders by the plain-scalar predicate (C5), so <code>notes: ...more</code> is plain.
 The Python reference now follows both where it had departed.</p>
+</blockquote>
+<blockquote>
+<p><strong>v0.1 erratum (2026-11-15, second part): keys, three code points, field
+types, nested <code>threshold</code>, TECHNICAL.</strong> The same review left six inputs on
+which the reference implementations still differed or which locked without
+meaning anything. No published vector, canonical byte or digest changes.
+Items 9, 10 and 13 touch only inputs on which the implementations disagreed.
+Item 11 rejects manifests the published schema never allowed, some of which all
+four implementations used to accept (<code>comparator: null</code>). Item 12 applies to
+manifests being locked now, not to verifying earlier ones.</p>
+<ol start="9">
+<li><strong>Mapping keys (§3.1).</strong> A mapping key <strong>MUST</strong> be a string. A YAML key read
+as a number, boolean, null, sequence or mapping (<code>1:</code>, <code>true:</code>, <code>~:</code>,
+<code>? [a, b]</code>) <strong>MUST</strong> be rejected with exit <code>2</code>; quoted (<code>&#39;1&#39;:</code>), it is a
+string. JSON keys are always strings.</li>
+<li><strong>U+FFFE, U+FFFF and U+10FFFF (§3.4).</strong> These three code points join the
+   prohibited set: YAML emitters disagree on them and the grammar has no form
+   for them. The other 63 Unicode noncharacters are unchanged; every reference
+   implementation renders them alike.</li>
+<li><strong>Field types (§2.1, §2.2).</strong> A field that is present <strong>MUST</strong> have the type
+   the published schema gives it: <code>claim_id</code>, <code>created_at</code>, <code>metric</code>,
+   <code>comparator</code>, <code>prior_hash</code>, <code>notes</code> and the <code>id</code>, <code>hash</code>, <code>uri</code> and
+   <code>signature</code> members are strings; <code>dataset</code>, <code>producer</code>, <code>model</code>,
+   <code>metric_args</code> and <code>compute_envelope</code> are mappings. <code>notes: null</code> and
+   <code>prior_hash: null</code> are rejected: an optional field is either absent or a
+   string. The schema&#39;s <code>seed</code> now matches §2.1 (no negative branch).</li>
+<li><strong><code>created_at</code> in a new manifest (§2.1).</strong> A manifest being locked or
+   committed now <strong>MUST</strong> write <code>created_at</code> as <code>YYYY-MM-DDTHH:MM:SSZ</code>. A
+   verifier still reads any RFC 3339 spelling, so a manifest locked earlier
+   keeps its hash and stays verifiable.</li>
+<li><strong>Nested <code>threshold</code> (grammar C6, G4).</strong> The float-field and by-value rules
+   for <code>threshold</code> apply to the root mapping only; a <code>threshold</code> key inside
+   <code>metric_args</code> renders by its spelling like any other number. The Python
+   reference and the grammar already did this.</li>
+</ol>
 </blockquote>
 <hr>
 <p><em>Editor&#39;s note: This document is intended to be readable, implementable, and

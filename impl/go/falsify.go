@@ -275,6 +275,13 @@ func renderMappingV(m map[string]interface{}, indent int, floatFields map[string
 		if needsQuoting(k) {
 			rk = quoteSingle(k)
 		}
+		// The float-field rule applies to the root `threshold` only (grammar G4,
+		// erratum 2026-11-15); a nested `threshold` renders by its spelling (C6).
+		// A linkage record's `result.observed` keeps its own float rule.
+		field := k
+		if indent != 0 && k == "threshold" {
+			field = ""
+		}
 		switch sub := v.(type) {
 		case map[string]interface{}:
 			// §C8: an empty mapping renders `{}` and an empty sequence `[]`.
@@ -309,7 +316,7 @@ func renderMappingV(m map[string]interface{}, indent int, floatFields map[string
 					nestedLines[0] = fmt.Sprintf("%s- %s", pad, strings.TrimPrefix(nestedLines[0], padNested))
 					lines = append(lines, strings.Join(nestedLines, "\n"))
 				} else {
-					rendered, err := renderScalar(item, k, floatFields)
+					rendered, err := renderScalar(item, field, floatFields)
 					if err != nil {
 						return "", err
 					}
@@ -325,7 +332,7 @@ func renderMappingV(m map[string]interface{}, indent int, floatFields map[string
 					}
 				}
 			}
-			rendered, err := renderScalar(v, k, floatFields)
+			rendered, err := renderScalar(v, field, floatFields)
 			if err != nil {
 				return "", err
 			}
@@ -531,7 +538,8 @@ func evaluatePredicate(observed, threshold float64, comparator string) (bool, er
 // separators (U+2028/U+2029), and BOM (U+FEFF). They canonicalise inconsistently
 // across YAML engines, so a manifest carrying them is non-portable. Rejecting is
 // additive — no conformance vector contains them. Mirrors the Python reference.
-var forbiddenChars = regexp.MustCompile("[\\x00-\\x1f\\x7f-\\x9f\\x{2028}\\x{2029}\\x{feff}]")
+// U+FFFE, U+FFFF and U+10FFFF are refused too (erratum 2026-11-15, second part).
+var forbiddenChars = regexp.MustCompile("[\\x00-\\x1f\\x7f-\\x9f\\x{2028}\\x{2029}\\x{feff}\\x{fffe}\\x{ffff}\\x{10ffff}]")
 
 // nonNFCFields mirrors _non_nfc_fields in falsify_prml.py. NFC and NFD spellings
 // of the same text read identically and hash differently, so the same claim would
@@ -651,7 +659,7 @@ func validateManifest(m map[string]interface{}) []string {
 	}
 	for _, fld := range forbiddenCharFields(m, "") {
 		errs = append(errs, fld+": contains a control / non-portable character "+
-			"(C0/C1, U+007F, U+2028/U+2029, or U+FEFF) — not allowed in a PRML string field")
+			"(C0/C1, U+007F, U+2028/U+2029, U+FEFF, U+FFFE/U+FFFF/U+10FFFF or a lone surrogate) — not allowed in a PRML string field")
 	}
 	for _, fld := range nonNFCFields(m, "") {
 		errs = append(errs, fld+": string is not in Unicode NFC — the same text in a "+
@@ -721,6 +729,45 @@ func schemaConformanceErrors(m map[string]interface{}) []string {
 		}
 	}
 	errs = append(errs, structuralErrors(m, "", 1, false)...)
+	errs = append(errs, typeErrors(m)...)
+	return errs
+}
+
+// typeErrors checks the field types of the published schema wherever a field is
+// present (erratum 2026-11-15, second part). Same messages as the other references.
+func typeErrors(m map[string]interface{}) []string {
+	var errs []string
+	isMap := func(v interface{}) bool { _, ok := v.(map[string]interface{}); return ok }
+	for _, f := range []string{"claim_id", "created_at", "metric", "comparator"} {
+		if v, ok := m[f]; ok {
+			if _, isStr := v.(string); !isStr {
+				errs = append(errs, f+" must be a string")
+			}
+		}
+	}
+	for _, f := range []string{"dataset", "producer", "model", "metric_args", "compute_envelope"} {
+		if v, ok := m[f]; ok && !isMap(v) {
+			errs = append(errs, f+" must be a mapping")
+		}
+	}
+	subs := []struct {
+		f  string
+		ks []string
+	}{{"dataset", []string{"id", "hash", "uri"}}, {"producer", []string{"id", "signature"}}, {"model", []string{"id", "hash", "uri"}}}
+	for _, sb := range subs {
+		sub, ok := m[sb.f].(map[string]interface{})
+		if !ok {
+			continue
+		}
+		for _, k := range sb.ks {
+			if v, ok := sub[k]; ok {
+				if _, isStr := v.(string); !isStr {
+					errs = append(errs, sb.f+"."+k+" must be a string")
+				}
+			}
+		}
+	}
+	// `model` keeps its other keys (`version` is common): only the types are checked.
 	return errs
 }
 
