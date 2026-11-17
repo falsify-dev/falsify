@@ -20,3 +20,6 @@ list and may or may not promote to this backlog depending on community
 input received after freeze.
 - `05-sealed-disclosure.md` — sealed commitments and field-level selective disclosure (opened 2026-09-03; registry sealed commits exist today, spec unchanged)
 - `06-signature-sidecar.md` — the detached signature sidecar: `prml-sig/0` format, verifier behaviour (MAY verify; MUST verify over canonical bytes), Ed25519 test vector over TV-001 (opened 2026-09-13 by the disposition of the §2.3.3 forward-promise; records the in-manifest `producer.signature` circularity as an open question)
+- `07-framework-profile.md`: the governance profile, `prml-profile/0` (opened 2026-09-15, raised by a third party on `aiverify-foundation/moonshot#489`)
+- `08-action-envelope.md`: what the system under test was allowed to do (opened 2026-09-15)
+- `09-assessed-version.md`: identifying the version that was assessed, for hosted models and for system versus underlying model (opened 2026-11-17)
