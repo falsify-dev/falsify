@@ -75,6 +75,7 @@ No install? Verify any manifest in-browser at [registry.falsify.dev](https://reg
 | The manifest bytes existed no later than the timestamp | That the run happened after the timestamp |
 | Whether a later copy is byte-identical to the recorded one (`TAMPERED`, exit 3, if not) | That the reported result is true: the observed value is asserted by whoever ran the test |
 | That four independent implementations agree on the bytes (21 conformance vectors, 60 reject vectors) | That the bar was the right bar. That decision stays with the people who set it |
+| | That the evaluator or test harness actually read or applied these bytes |
 
 ### Ways in
 
