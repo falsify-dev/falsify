@@ -99,8 +99,8 @@ text and a SHA-256 implementation: canonical bytes are fully specified,
 the reference CLI is a single file with one runtime dependency, and the
 exit-code contract (0/PASS, 10/FAIL, 3/TAMPER, 11/GUARD) is the stable
 machine interface that CI gates and adapters build on. Byte-equivalence
-across four independent language implementations is enforced in CI rather
-than assumed. The repository hosts:
+across four reference implementations in four languages, all by the same
+author, is enforced in CI rather than assumed. The repository hosts:
 
 - **Specification text** (`spec/PRML-v0.1.md`): RFC-style, licensed under the Community Specification License 1.0,
   ~18 pages covering the canonicalization rules, manifest field semantics,

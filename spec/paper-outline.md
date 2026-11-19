@@ -1,5 +1,7 @@
 # Pre-Registered ML Manifests: A Content-Addressed Format for Verifiable Evaluation Claims
 
+> **Correction (19 Nov 2026):** all implementations named here were written by the PRML editor. "Independent" meant that they share no code, not that different parties wrote them. No implementation by another party is known.
+
 **Paper Outline — arXiv Preprint (Working Draft)**
 
 - **Target venue (preprint):** arXiv `cs.CR` (primary) · `cs.LG` (cross) · `cs.SE` (cross)

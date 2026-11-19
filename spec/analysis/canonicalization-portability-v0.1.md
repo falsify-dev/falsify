@@ -1,5 +1,7 @@
 # PRML v0.1 — Canonicalization Portability Findings
 
+> **Correction (19 Nov 2026):** all implementations named here were written by the PRML editor. "Independent" meant that they share no code, not that different parties wrote them. No implementation by another party is known.
+
 **Question:** Is the v0.1 canonicalization implementable in second and third languages byte-for-byte?
 
 **Answer:** Yes — across **four** independent reference implementations (Python, Node.js, Go, Rust), all twelve v0.1 normative vectors and all six v0.2 candidate vectors reproduce byte-for-byte with matching SHA-256 digests. The exercise surfaced **three** non-obvious cross-language pitfalls in the v0.1 normative suite that the prose specification under-specifies. A subsequent run against six v0.2 candidate vectors (TV-013 → TV-018) surfaced a **fourth**, more subtle, finding around small-magnitude float rendering. The *severity* of each finding varies by language stdlib; with the 2026-05-01 patches in JS, Go, and Rust, all four implementations now agree on the canonical bytes for every vector. This document records all four findings so v0.2 can address each in formal grammar form.

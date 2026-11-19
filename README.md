@@ -74,7 +74,7 @@ No install? Verify any manifest in-browser at [registry.falsify.dev](https://reg
 |---|---|
 | The manifest bytes existed no later than the timestamp | That the run happened after the timestamp |
 | Whether a later copy is byte-identical to the recorded one (`TAMPERED`, exit 3, if not) | That the reported result is true: the observed value is asserted by whoever ran the test |
-| That four independent implementations agree on the bytes (21 conformance vectors, 60 reject vectors) | That the bar was the right bar. That decision stays with the people who set it |
+| That our four reference implementations (Python, JavaScript, Go, Rust; all written by us) agree on the bytes (21 conformance vectors, 60 reject vectors) | That the bar was the right bar. That decision stays with the people who set it |
 | | That the evaluator or test harness actually read or applied these bytes |
 
 ### Ways in
@@ -617,10 +617,13 @@ argued through, frequently against a first draft the model proposed. The
 maintainer can explain any of them.
 
 **How you can check rather than take our word for it.** PRML's correctness is
-not a claim about who typed it. Four independent implementations (Python,
-JavaScript, Go, Rust) must produce byte-identical canonical bytes and the same
-SHA-256 for all 21 published conformance vectors, and must reject 20 negative
-inputs identically. That suite runs in CI on every change. Generated code that
+not a claim about who typed it. Four reference implementations in four languages
+(Python, JavaScript, Go, Rust), all written by us, must produce byte-identical
+canonical bytes and the same SHA-256 for all 21 published conformance vectors, and
+must reject the same malformed inputs (the 60-vector reject suite). Because one
+author wrote all four, this catches porting and canonicalisation bugs, not a shared
+misreading of the specification; no independent implementation by another party
+exists yet. That suite runs in CI on every change. Generated code that
 nobody understood would not survive it; the bugs it caught during development
 are recorded in [CHANGELOG.md](CHANGELOG.md), including three that were found
 after v0.3 shipped and fixed in v0.3.13.
