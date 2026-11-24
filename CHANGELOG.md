@@ -6,6 +6,9 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Fixed
+- `impl/js/falsify.js`: `validateManifest` no longer throws `RangeError: Maximum call stack size exceeded` when a manifest produces a very long list of errors (for example about 330,000 nested empty sequences); errors are appended one by one instead of spread into a single call. Vector, edge and reject suites give the same results as before. Same change in falsify-js 0.4.2.
+
 ## [0.7.1] — 2026-11-15
 
 ### Added
