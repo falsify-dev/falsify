@@ -260,7 +260,7 @@ footer.colophon a:hover { color: var(--ink); }
   <figcaption style="margin-top: 10px; font-size: 13px; color: var(--ink-3, #5a6677); font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: 0.02em;">60-second walkthrough: what a client receives at AI handover. A completed acceptance record (illustrative, demo signatures); every receipt shown is public at registry.falsify.dev. Live at <a href="https://spec.falsify.dev/demo/" style="color: var(--ink-2);">/demo</a>.</figcaption>
 </figure>
 
-<article id="content" data-prerendered="sha256:94bbe44671161c7442eb061a80337f082c3f9a3919275b009ed2cce74370d304">
+<article id="content" data-prerendered="sha256:315fa772fdd62b48baac2412dea78f51422d4cfc151e92545c0c3fbb76edb2e0">
 <!-- prerender: PRML-v0.1.md · marked 12.0.2 · scripts/spec-prerender.mjs — ÜRETİLMİŞ, elle düzeltme; .md düzelt ve --write koş -->
 <h1 id="prml-pre-registered-ml-manifest-specification">PRML — Pre-Registered ML Manifest Specification</h1>
 <p><strong>Version:</strong> 0.1 (Draft)
@@ -646,7 +646,8 @@ commitment in time but does not by itself order it against the run.</p>
 <ul>
 <li>Block-style mappings only (no flow-style).</li>
 <li>Plain scalars, double-quoted scalars, and integers.</li>
-<li>No anchors, aliases, or tags beyond <code>!!str</code>, <code>!!int</code>, <code>!!float</code>.</li>
+<li>No anchors, aliases, or tags beyond <code>!!str</code>, <code>!!int</code>, <code>!!float</code>. A reader rejects
+input that contains an anchor or an alias (erratum 2026-11-25).</li>
 <li>UTF-8 throughout; string scalars and keys are restricted to the portable character set of §3.4.</li>
 </ul>
 <h3 id="32-key-ordering">3.2 Key Ordering</h3>
@@ -1356,6 +1357,24 @@ manifest that was valid before becomes invalid.</p>
    implementations reject them until v0.2 is promoted.</li>
 </ol>
 </blockquote>
+<blockquote>
+<p><strong>v0.1 erratum (2026-11-25): anchors and aliases in YAML input, TECHNICAL.</strong>
+§3.1 lists the YAML subset a manifest MUST be <em>expressible</em> in. It has never been
+applied to input: readers accept flow style and single-quoted scalars, which the
+same list leaves out. This erratum makes one clause of that list binding on input,
+the one on anchors and aliases; flow style, quoting and the tag clause are
+unchanged. No published vector, canonical byte or digest changes.</p>
+<ol start="17">
+<li><strong>Anchors and aliases (§3.1).</strong> A YAML manifest <strong>MUST NOT</strong> contain a node
+anchor (<code>&amp;name</code>) or an alias node (<code>*name</code>). A reader <strong>MUST</strong> reject such a
+manifest with exit <code>2</code>. Canonical form (§3.6) is defined for a tree, and an
+alias places one node at more than one position. As with <code>comparator: null</code>
+(item 11), a file written with anchors that verified before this erratum is
+now rejected until it is rewritten. Replacing each alias with a copy of the
+node it refers to gives the same canonical bytes and the same digest, so the
+digest it was locked under does not change.</li>
+</ol>
+</blockquote>
 <hr>
 <p><em>Editor&#39;s note: This document is intended to be readable, implementable, and
 boring. Excitement is reserved for what gets built on top of it.</em></p>
@@ -1386,7 +1405,7 @@ boring. Excitement is reserved for what gets built on top of it.</em></p>
     <li><a href="https://github.com/falsify-dev/falsify-cookbook"><strong>Cookbook: <code>falsify-cookbook</code></strong></a> — field manual for the spec. 10 patterns + 4 anti-patterns; each one page with a runnable example. CC0.</li>
     <li><a href="https://falsify.dev/integrity"><strong>Disclosure Index</strong></a> — public scorecard of how 27 well-known ML eval claims meet the 9 PRML disclosure criteria. Source: <a href="https://github.com/falsify-dev/falsify-integrity-index">falsify-dev/falsify-integrity-index</a>. CC0 data, MIT tooling.</li>
     <li><a href="https://github.com/falsify-dev/falsify-inspect"><strong>Inspect AI adapter: <code>falsify-inspect</code></strong></a> — anchor an Inspect AI eval claim's threshold to a SHA-256 hash before the run, verify the post-run log against it. MIT.</li>
-  <li><a href="/IMPLEMENTERS-GUIDE.md">Implementer&rsquo;s guide</a> &mdash; how to write a PRML implementation from the text alone and check it against 135 positive and 60 reject vectors (2026-09-13)</li>
+  <li><a href="/IMPLEMENTERS-GUIDE.md">Implementer&rsquo;s guide</a> &mdash; how to write a PRML implementation from the text alone and check it against 135 positive and 62 reject vectors (2026-09-13)</li>
 <li><a href="/COMPATIBILITY.md">Compatibility and deprecation policy</a> &mdash; what a specification version, a package version and a registry record promise, and how anything is removed (adopted 2026-09-13)</li>
 </ul>
 </aside>

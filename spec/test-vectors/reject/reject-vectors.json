@@ -818,5 +818,25 @@
     "expect": "prior_hash must be 64 hex characters",
     "ext": "json",
     "raw": "{\"version\": \"prml/0.1\", \"claim_id\": \"01900000-0000-7000-8000-000000000000\", \"created_at\": \"2026-05-01T12:00:00Z\", \"metric\": \"accuracy\", \"comparator\": \">=\", \"threshold\": 0.85, \"dataset\": {\"id\": \"ds\", \"hash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\"}, \"seed\": 42, \"producer\": {\"id\": \"falsify.dev\"}, \"prior_hash\": null}"
+  },
+  {
+    "id": "RJ-061",
+    "title": "Y-reject-alias",
+    "category": "erratum-2026-11-25",
+    "reason": "PRML v0.1 erratum 2026-11-25 (anchors and aliases, §3.1).",
+    "field": "-",
+    "expect": "anchors and aliases are not allowed",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  a: &x 1\n  b: *x\n"
+  },
+  {
+    "id": "RJ-062",
+    "title": "Y-reject-anchor",
+    "category": "erratum-2026-11-25",
+    "reason": "PRML v0.1 erratum 2026-11-25 (anchors and aliases, §3.1).",
+    "field": "-",
+    "expect": "anchors and aliases are not allowed",
+    "ext": "yaml",
+    "raw": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  a: &x 1\n"
   }
 ]

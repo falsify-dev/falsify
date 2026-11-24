@@ -1,5 +1,5 @@
 {
- "description": "Regression cases for the PRML v0.1 erratum of 2026-11-15, both parts (spec/PRML-v0.1.md, Change Log). canonical null means the input MUST be rejected with exit code 2. Not a conformance suite: no count on any public surface refers to this file.",
+ "description": "Regression cases for the PRML v0.1 erratum of 2026-11-15, both parts (spec/PRML-v0.1.md, Change Log). canonical null means the input MUST be rejected with exit code 2. Not a conformance suite: no count on any public surface refers to this file. Y-anchor-rejected follows the erratum of 2026-11-25 (anchors and aliases, §3.1); before it the case was accepted and written out.",
  "cases": [
   {
    "id": "C8-empty-mapping",
@@ -121,11 +121,11 @@
    "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  k: 1000.0\n  q: '010'\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
   },
   {
-   "id": "Y-anchor-written-out",
+   "id": "Y-anchor-rejected",
    "rule": "3.1",
    "format": "yaml",
    "input": "version: prml/0.1\nclaim_id: 01900000-0000-7000-8000-000000000000\ncreated_at: '2026-05-01T12:00:00Z'\nmetric: accuracy\ncomparator: '>='\nthreshold: 0.85\ndataset:\n  id: ds\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\nseed: 42\nproducer:\n  id: falsify.dev\nmetric_args:\n  a: &x {b: 1}\n  c: *x\n",
-   "canonical": "claim_id: 01900000-0000-7000-8000-000000000000\ncomparator: '>='\ncreated_at: '2026-05-01T12:00:00Z'\ndataset:\n  hash: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n  id: ds\nmetric: accuracy\nmetric_args:\n  a:\n    b: 1\n  c:\n    b: 1\nproducer:\n  id: falsify.dev\nseed: 42\nthreshold: 0.85\nversion: prml/0.1\n"
+   "canonical": null
   },
   {
    "id": "Y-merge-and-value-are-strings",

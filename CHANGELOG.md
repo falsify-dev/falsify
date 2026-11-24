@@ -6,6 +6,21 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.7.2] — 2026-11-25
+
+### Changed (PRML v0.1 erratum 2026-11-25)
+- **YAML anchors and aliases are rejected** (§3.1, exit 2). §3.1 has excluded
+  them from the PRML YAML subset since the first draft; Python and JavaScript
+  now reject input that contains a node anchor (`&name`) or an alias (`*name`).
+  A file written with anchors that verified before is rejected until each alias
+  is replaced by a copy of the node it refers to; the rewritten file has the
+  same canonical bytes and digest. Go and Rust read JSON only and are unchanged.
+
+### Added
+- Reject vectors RJ-061 (an alias) and RJ-062 (an anchor), both YAML-only:
+  the reject suite is 62 vectors (24 YAML-only; JSON-only implementations still
+  run 38).
+
 ### Fixed
 - `impl/js/falsify.js`: `validateManifest` no longer throws `RangeError: Maximum call stack size exceeded` when a manifest produces a very long list of errors (for example about 330,000 nested empty sequences); errors are appended one by one instead of spread into a single call. Vector, edge and reject suites give the same results as before. Same change in falsify-js 0.4.2.
 

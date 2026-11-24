@@ -42,7 +42,7 @@ import re
 import sys
 import unicodedata
 
-__version__ = "0.7.1"
+__version__ = "0.7.2"
 
 EXIT_PASS = 0
 EXIT_BAD = 2
@@ -275,6 +275,20 @@ def _core_loader():
     yaml = _require_yaml()
 
     class _CoreSafeLoader(yaml.SafeLoader):
+        def compose_node(self, parent, index):
+            # §3.1 (erratum 2026-11-25): a YAML manifest MUST NOT contain a node
+            # anchor or an alias node. Canonical form is defined for a tree, and an
+            # alias places one node at more than one position. Checked on the event
+            # stream, before any node is built.
+            event = self.peek_event()
+            if isinstance(event, yaml.AliasEvent) or getattr(event, "anchor", None) is not None:
+                raise yaml.composer.ComposerError(
+                    None, None,
+                    "YAML anchors and aliases are not allowed in a PRML manifest (§3.1)",
+                    event.start_mark,
+                )
+            return super().compose_node(parent, index)
+
         def construct_mapping(self, node, deep=False):
             # A duplicate key is last-wins in every mainstream YAML loader, which
             # means the manifest a human reads and the manifest the hash binds can

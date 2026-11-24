@@ -351,7 +351,8 @@ A PRML manifest **MUST** be expressible in the following YAML subset:
 
 - Block-style mappings only (no flow-style).
 - Plain scalars, double-quoted scalars, and integers.
-- No anchors, aliases, or tags beyond `!!str`, `!!int`, `!!float`.
+- No anchors, aliases, or tags beyond `!!str`, `!!int`, `!!float`. A reader rejects
+  input that contains an anchor or an alias (erratum 2026-11-25).
 - UTF-8 throughout; string scalars and keys are restricted to the portable character set of §3.4.
 
 ### 3.2 Key Ordering
@@ -1020,6 +1021,23 @@ Conformance is enforceable via the falsify reference test suite
 >    `value_method`, `sample_size`, the window fields, `runner_attestation`,
 >    `revoked_at`, `revocation_reason`) as not adopted: the reference
 >    implementations reject them until v0.2 is promoted.
+
+
+> **v0.1 erratum (2026-11-25): anchors and aliases in YAML input, TECHNICAL.**
+> §3.1 lists the YAML subset a manifest MUST be *expressible* in. It has never been
+> applied to input: readers accept flow style and single-quoted scalars, which the
+> same list leaves out. This erratum makes one clause of that list binding on input,
+> the one on anchors and aliases; flow style, quoting and the tag clause are
+> unchanged. No published vector, canonical byte or digest changes.
+>
+> 17. **Anchors and aliases (§3.1).** A YAML manifest **MUST NOT** contain a node
+>     anchor (`&name`) or an alias node (`*name`). A reader **MUST** reject such a
+>     manifest with exit `2`. Canonical form (§3.6) is defined for a tree, and an
+>     alias places one node at more than one position. As with `comparator: null`
+>     (item 11), a file written with anchors that verified before this erratum is
+>     now rejected until it is rewritten. Replacing each alias with a copy of the
+>     node it refers to gives the same canonical bytes and the same digest, so the
+>     digest it was locked under does not change.
 
 ---
 

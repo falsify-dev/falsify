@@ -74,7 +74,7 @@ No install? Verify any manifest in-browser at [registry.falsify.dev](https://reg
 |---|---|
 | The manifest bytes existed no later than the timestamp | That the run happened after the timestamp |
 | Whether a later copy is byte-identical to the recorded one (`TAMPERED`, exit 3, if not) | That the reported result is true: the observed value is asserted by whoever ran the test |
-| That our four reference implementations (Python, JavaScript, Go, Rust; all written by us) agree on the bytes (21 conformance vectors, 60 reject vectors) | That the bar was the right bar. That decision stays with the people who set it |
+| That our four reference implementations (Python, JavaScript, Go, Rust; all written by us) agree on the bytes (21 conformance vectors, 62 reject vectors) | That the bar was the right bar. That decision stays with the people who set it |
 | | That the evaluator or test harness actually read or applied these bytes |
 
 ### Ways in
@@ -91,9 +91,9 @@ No install? Verify any manifest in-browser at [registry.falsify.dev](https://reg
 | Your own platform | [`docs/EMBED.md`](docs/EMBED.md): three pure functions and a five-line hook |
 | A real AI delivery | [Acceptance Evidence Pack](https://falsify.dev/pricing/#pilot), contracted through Falsify OÜ (reg. 17574308, Tallinn, Estonia) |
 
-**Current version:** falsify 0.7.1 (PRML CLI) · falsify-engine 0.7.1 — `falsify --version`.
+**Current version:** falsify 0.7.2 (PRML CLI) · falsify-engine 0.7.2 — `falsify --version`.
 
-PRML v0.2 frozen 2026-05-22. Four reference implementations (Python, JavaScript, Go, Rust), byte-equivalent on all 21 conformance vectors (13 v0.1 + 8 v0.2), 60 reject vectors and the 114-vector edge suite derived from the §3.6 formal grammar.
+PRML v0.2 frozen 2026-05-22. Four reference implementations (Python, JavaScript, Go, Rust), byte-equivalent on all 21 conformance vectors (13 v0.1 + 8 v0.2), 62 reject vectors and the 114-vector edge suite derived from the §3.6 formal grammar.
 
 If PRML is useful to you, starring this repository helps other people find it.
 
@@ -190,7 +190,7 @@ Each README states exactly what is real and what is not: the Langfuse and Lamina
 This repository is the home of **PRML v0.1** — Pre-Registered ML Manifest Specification. The spec, conformance suite, reference implementations (`impl/`, JS/Go/Rust + a Python reference target), and adjacent documents live under `spec/`:
 
 - **[`spec/PRML-v0.1.md`](spec/PRML-v0.1.md)** — the spec (RFC-style, [Community Specification License 1.0](spec/LICENSE.md))
-- **[`spec/test-vectors/`](spec/test-vectors/)** — 13 v0.1 normative conformance vectors with locked SHA-256 digests, plus 8 v0.2 vectors and 60 reject vectors (the CI matrix: 21 positive, plus 60 negative for Python and JS and 38 for Go and Rust, which read JSON only)
+- **[`spec/test-vectors/`](spec/test-vectors/)** — 13 v0.1 normative conformance vectors with locked SHA-256 digests, plus 8 v0.2 vectors and 62 reject vectors (the CI matrix: 21 positive, plus 62 negative for Python and JS and 38 for Go and Rust, which read JSON only)
 - **[`spec/analysis/positioning-v0.1.md`](spec/analysis/positioning-v0.1.md)** — PRML vs in-toto / SLSA / Model Cards / HELM / ClinicalTrials.gov
 - **[`spec/analysis/canonicalization-portability-v0.1.md`](spec/analysis/canonicalization-portability-v0.1.md)** — three cross-language findings from the JS second implementation
 - **[`spec/compliance/AI-Act-mapping-v0.2.md`](spec/compliance/AI-Act-mapping-v0.2.md)** — EU AI Act Article 9(8)/11/12/13/15/17/18/72/73 mapping
@@ -227,7 +227,7 @@ Two of the four are distributed as packages; two exist only in this repository. 
 
 **What we promise across versions:** [`spec/COMPATIBILITY.md`](spec/COMPATIBILITY.md) (adopted 2026-09-13) — a manifest valid under `prml/X.Y` stays valid under `prml/X.Y` forever; vectors are added, never changed; nothing is removed without two minor releases' notice.
 
-**Writing your own?** [`spec/IMPLEMENTERS-GUIDE.md`](spec/IMPLEMENTERS-GUIDE.md) — where every rule is stated, which corpus to check against (13 + 8 + 114 positive vectors, 60 reject), the exact commands, what "conformant" means, and the mistakes the first three implementations made. No independent implementation exists yet; the first one gets listed here.
+**Writing your own?** [`spec/IMPLEMENTERS-GUIDE.md`](spec/IMPLEMENTERS-GUIDE.md) — where every rule is stated, which corpus to check against (13 + 8 + 114 positive vectors, 62 reject), the exact commands, what "conformant" means, and the mistakes the first three implementations made. No independent implementation exists yet; the first one gets listed here.
 
 
 - **Python:** [`falsify_prml.py`](falsify_prml.py) — original reference, uses PyYAML. Installed as the `falsify` command. ⚠ Not `falsify.py`: that is the workflow engine, a different tool with a different schema, installed as `falsify-engine`.
@@ -307,7 +307,7 @@ Consume falsify's hooks from your own repo:
 ```yaml
 repos:
   - repo: https://github.com/falsify-dev/falsify
-    rev: v0.7.1
+    rev: v0.7.2
     hooks:
       - id: falsify-guard
       - id: falsify-doctor
@@ -579,17 +579,17 @@ Run `make dogfood` to re-verify. CI runs these on every PR.
 
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 
-> **Latest — 2026-11-15** · **falsify 0.7.1** on PyPI: accepts `code` as an optional mapping, as spec §2.2 lists it (third part of the PRML v0.1 erratum of 2026-11-15); the edge suite is 114 vectors. 0.7.0 (same day) followed the second part of the PRML v0.1 erratum of 2026-11-15 (YAML mapping keys must be strings; U+FFFE, U+FFFF and U+10FFFF are rejected; field types of the published schema are checked; `lock` writes `created_at` as `YYYY-MM-DDTHH:MM:SSZ`; a nested `threshold` renders by its spelling); the edge suite was 113 vectors and the reject suite 60. 0.6.0 (same day) followed the first part (a YAML plain scalar is a number only when spelled as a JSON number; unquoted timestamps, non-finite numbers, an out-of-range `seed`, a sequence inside a sequence and nesting past 100 levels are rejected; empty collections render `{}` and `[]`); no published vector or digest changed, the edge suite grew to 108 vectors and the reject suite to 40 at the time. 0.5.3 (2026-11-02): repository links point to the `falsify-dev` GitHub organisation and the conformance fixtures use `producer.id: falsify.dev` (no behaviour change); 0.5.2 made the wheel ship `falsify_linkage.py` and `falsify linkage start|finish|verify` works from the `falsify` command (0.5.1 left the module out); 0.5.1 added `--json` on `verify`, `lock` and `hash`; 0.5.0 added `falsify anchor` and `falsify receipt verify` (RFC 3161 + Rekor, offline), `init` writes a lockable manifest, `attest --as test-result`; v0.3.13 (2026-08-23) fixed three specification defects and expanded the negative-conformance suite from 14 to 20 vectors. The conformance suite stays at 21 positive vectors, with 60 reject vectors, across the four reference implementations. Registry receipts carry an RFC 3161 countersignature and a Rekor v2 mirror.
+> **Latest — 2026-11-25** · **falsify 0.7.2** on PyPI: rejects YAML anchors and aliases, as spec §3.1 now requires of input (PRML v0.1 erratum of 2026-11-25); the reject suite is 62 vectors. 0.7.1 (2026-11-15) accepted `code` as an optional mapping, as spec §2.2 lists it (third part of the PRML v0.1 erratum of 2026-11-15), with an edge suite of 114 vectors. 0.7.0 (same day) followed the second part of the PRML v0.1 erratum of 2026-11-15 (YAML mapping keys must be strings; U+FFFE, U+FFFF and U+10FFFF are rejected; field types of the published schema are checked; `lock` writes `created_at` as `YYYY-MM-DDTHH:MM:SSZ`; a nested `threshold` renders by its spelling); the edge suite was 113 vectors and the reject suite 60. 0.6.0 (same day) followed the first part (a YAML plain scalar is a number only when spelled as a JSON number; unquoted timestamps, non-finite numbers, an out-of-range `seed`, a sequence inside a sequence and nesting past 100 levels are rejected; empty collections render `{}` and `[]`); no published vector or digest changed, the edge suite grew to 108 vectors and the reject suite to 40 at the time. 0.5.3 (2026-11-02): repository links point to the `falsify-dev` GitHub organisation and the conformance fixtures use `producer.id: falsify.dev` (no behaviour change); 0.5.2 made the wheel ship `falsify_linkage.py` and `falsify linkage start|finish|verify` works from the `falsify` command (0.5.1 left the module out); 0.5.1 added `--json` on `verify`, `lock` and `hash`; 0.5.0 added `falsify anchor` and `falsify receipt verify` (RFC 3161 + Rekor, offline), `init` writes a lockable manifest, `attest --as test-result`; v0.3.13 (2026-08-23) fixed three specification defects and expanded the negative-conformance suite from 14 to 20 vectors. The conformance suite stays at 21 positive vectors, with 62 reject vectors, across the four reference implementations. Registry receipts carry an RFC 3161 countersignature and a Rekor v2 mirror.
 
 <a id="roadmap"></a>
 ### Roadmap
 
 Two roadmaps run alongside each other:
 
-- **CLI tool roadmap:** [ROADMAP.md](ROADMAP.md) — `falsify` features, integrations, dependencies. **Current CLI: falsify 0.7.1 on PyPI.**
+- **CLI tool roadmap:** [ROADMAP.md](ROADMAP.md) — `falsify` features, integrations, dependencies. **Current CLI: falsify 0.7.2 on PyPI.**
 - **Specification roadmap:** [spec/v0.2/ROADMAP.md](spec/v0.2/ROADMAP.md) — PRML format evolution, canonicalization grammar, conformance. **Spec v0.2 frozen 2026-05-22.** v0.3 design backlog open under [`spec/v0.3-backlog/`](spec/v0.3-backlog/) (claim trees, suite manifests, selective-disclosure resistance via `leaves_total`).
 
-The CLI is downstream of the spec: spec v0.2 frozen 2026-05-22; the CLI tracks it (currently falsify 0.7.1). Spec v0.3 work is in [`spec/v0.3-backlog/`](spec/v0.3-backlog/).
+The CLI is downstream of the spec: spec v0.2 frozen 2026-05-22; the CLI tracks it (currently falsify 0.7.2). Spec v0.3 work is in [`spec/v0.3-backlog/`](spec/v0.3-backlog/).
 
 </details>
 
@@ -620,7 +620,7 @@ maintainer can explain any of them.
 not a claim about who typed it. Four reference implementations in four languages
 (Python, JavaScript, Go, Rust), all written by us, must produce byte-identical
 canonical bytes and the same SHA-256 for all 21 published conformance vectors, and
-must reject the same malformed inputs (the 60-vector reject suite). Because one
+must reject the same malformed inputs (the 62-vector reject suite). Because one
 author wrote all four, this catches porting and canonicalisation bugs, not a shared
 misreading of the specification; no independent implementation by another party
 exists yet. That suite runs in CI on every change. Generated code that
