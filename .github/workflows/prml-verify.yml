@@ -73,7 +73,7 @@ jobs:
           good_path = Path(".prml-fixtures/good.prml.yaml")
           good_path.write_text(canonicalize(good))
           h = hashlib.sha256(canonicalize(good).encode("utf-8")).hexdigest()
-          Path(".prml-fixtures/good.prml.sha256").write_text(h + "\n")
+          Path(".prml-fixtures/good.prml.prml.sha256").write_text(h + "\n")
 
           # Write tampered manifest with INCORRECT (stale) sidecar — sidecar
           # contains the hash of a DIFFERENT spec (the good one), simulating
@@ -81,7 +81,7 @@ jobs:
           tampered_path = Path(".prml-fixtures/tampered.prml.yaml")
           tampered_path.write_text(canonicalize(tampered))
           # Sidecar deliberately holds the GOOD hash, not the tampered one
-          Path(".prml-fixtures/tampered.prml.sha256").write_text(h + "\n")
+          Path(".prml-fixtures/tampered.prml.prml.sha256").write_text(h + "\n")
 
           print("Fixtures written:")
           print(f"  good     → hash {h[:16]}…")
@@ -111,3 +111,23 @@ jobs:
             exit 1
           fi
           echo "✅ falsify-verify correctly detected 1 tampered manifest and 1 verified manifest."
+
+      - name: Manifests without any sidecar must not pass
+        run: |
+          mkdir -p .prml-nosidecar
+          cp .prml-fixtures/good.prml.yaml .prml-nosidecar/only.prml.yaml
+
+      - name: Run action — nothing to verify, must fail
+        id: nothing
+        continue-on-error: true
+        uses: ./.github/actions/falsify-verify
+        with:
+          manifest-glob: '.prml-nosidecar/*.prml.yaml'
+
+      - name: Assert a run that verified nothing failed
+        run: |
+          if [ "${{ steps.nothing.outcome }}" != "failure" ]; then
+            echo "::error::a run that verified no manifest passed"
+            exit 1
+          fi
+          echo "✅ a run that verified nothing fails."

@@ -93,34 +93,36 @@
 <p>The schemas can be added to <a href="https://www.schemastore.org/">SchemaStore.org</a> for global IDE auto-detection. PR pending — once accepted, any file matching the patterns above gets autocomplete without per-project config.</p>
 
 <h2>CI validation (Python)</h2>
-<pre>pip install jsonschema pyyaml
+<pre>pip install jsonschema falsify
 
 python3 -c "
-import json, yaml, jsonschema, urllib.request
-schema = json.loads(urllib.request.urlopen(
-    'https://spec.falsify.dev/schema/prml-v0.1.schema.json').read())
-manifest = yaml.safe_load(open('manifest.yaml'))
+import json, jsonschema, urllib.request
+from falsify_prml import load_manifest  # the reading falsify hash / verify use
+req = urllib.request.Request('https://spec.falsify.dev/schema/prml-v0.1.schema.json',
+                             headers={'User-Agent': 'prml-schema-check'})
+schema = json.loads(urllib.request.urlopen(req).read())
+manifest = load_manifest('manifest.yaml')
 jsonschema.validate(manifest, schema)
 print('OK — manifest.yaml conforms to PRML v0.1')
 "</pre>
 
 <h2>CI validation (Node)</h2>
-<pre>npm install ajv ajv-formats yaml node-fetch
+<pre>npm install ajv ajv-formats falsify-js
 
 node -e "
-import('node-fetch').then(async ({default: fetch}) => {
-  const Ajv = (await import('ajv')).default;
+(async () => {
+  const Ajv = (await import('ajv/dist/2020.js')).default;  // the schemas are JSON Schema 2020-12
   const addFormats = (await import('ajv-formats')).default;
-  const yaml = await import('yaml');
+  const { parseManifest } = await import('falsify-js');  // the reading falsify-js lock / verify use
   const fs = await import('fs');
   const schema = await (await fetch(
     'https://spec.falsify.dev/schema/prml-v0.1.schema.json')).json();
   const ajv = new Ajv({strict: false});
   addFormats(ajv);
   const validate = ajv.compile(schema);
-  const ok = validate(yaml.parse(fs.readFileSync('manifest.yaml', 'utf8')));
+  const ok = validate(parseManifest(fs.readFileSync('manifest.yaml', 'utf8'), 'yaml'));
   console.log(ok ? 'OK' : validate.errors);
-});
+})();
 "</pre>
 
 <h2>What the schemas do not catch</h2>

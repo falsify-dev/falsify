@@ -17,6 +17,7 @@ SHA-256 of the file bytes; VERIFY.sh recomputes it with falsify_prml.manifest_ha
 import argparse, hashlib, json, os, sys, urllib.request, zipfile
 
 REGISTRY = os.environ.get("FALSIFY_REGISTRY", "https://registry.falsify.dev")
+UA = "falsify-acceptance-record (+https://github.com/falsify-dev/falsify)"
 NEVER_BUNDLE = ("keys/demo-supplier", "keys/demo-client", "keys/demo-falsify")
 
 
@@ -30,13 +31,13 @@ def sha256(path):
 
 def post_yaml(path):
     req = urllib.request.Request(REGISTRY + "/commit", data=open(path, "rb").read(),
-                                 headers={"content-type": "text/yaml"}, method="POST")
+                                 headers={"content-type": "text/yaml", "user-agent": UA}, method="POST")
     with urllib.request.urlopen(req, timeout=60) as r:
         return json.load(r)
 
 
 def fetch(url, out):
-    with urllib.request.urlopen(url, timeout=60) as r, open(out, "wb") as f:
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"user-agent": UA}), timeout=60) as r, open(out, "wb") as f:
         f.write(r.read())
 
 

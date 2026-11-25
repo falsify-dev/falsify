@@ -38,13 +38,13 @@ rules of every specification version they have ever supported; dropping support
 for a specification version is a MAJOR change to the implementation and is
 announced under §4.
 
-**Exceptions.** Two errata have rejected input that the implementations accepted
-before, and so depart from the invariant above: item 11 of the PRML v0.1 erratum
-of 2026-11-15 (a field of the wrong type, such as `comparator: null`) and item 17
-of the erratum of 2026-11-25 (YAML anchors and aliases). A file affected by item
-17 verifies again, under the same digest, once each alias is replaced by a copy of
-the node it refers to. Neither changes the canonical bytes or the digest of any
-manifest the implementations accept.
+**Exceptions.** Several errata have rejected input that the implementations
+accepted before, and so depart from the invariant above: the control-character
+rule added to §3.4 on 2026-06-23, the errata of 2026-08-23, both parts of the
+erratum of 2026-11-15, and the erratum of 2026-11-25. The first is recorded in the
+changelog; the others are dated in the specification. A file affected by the
+erratum of 2026-11-25 (YAML anchors and aliases) verifies again, under the same
+digest, once each alias is replaced by a copy of the node it refers to.
 
 ## 3. What a package version promises
 

@@ -67,7 +67,8 @@ def main() -> int:
             "",
             "If you expected manifests to be checked, verify the `manifest-glob` input.",
         ])
-        return 0
+        print("::error::falsify-verify: no manifest matched, so nothing was verified")
+        return 1
 
     tampered: list[tuple[Path, str, str]] = []
     falsified: list[Path] = []
@@ -76,10 +77,12 @@ def main() -> int:
 
     for manifest_path in manifests:
         rel = manifest_path.relative_to(repo_root)
-        sidecar_path = manifest_path.with_suffix(".sha256")
-        # sidecar convention: foo.prml.yaml -> foo.prml.sha256
+        # The sidecar `falsify lock` writes: the last extension is replaced by
+        # ".prml.sha256" (foo.prml.yaml -> foo.prml.prml.sha256). The older name
+        # this action used to expect (foo.prml.sha256) is still read as a fallback.
+        sidecar_path = manifest_path.with_name(manifest_path.name.rsplit(".", 1)[0] + ".prml.sha256")
         if not sidecar_path.exists():
-            sidecar_path = manifest_path.parent / (manifest_path.stem + ".sha256")
+            sidecar_path = manifest_path.with_suffix(".sha256")
 
         try:
             spec = falsify_prml.load_manifest(str(manifest_path))
@@ -148,7 +151,7 @@ def main() -> int:
         summary.append("### Missing sidecar files")
         summary.append("")
         for m in no_sidecar:
-            summary.append(f"- `{m.relative_to(repo_root)}` — no `.prml.sha256` companion file found")
+            summary.append(f"- `{m.relative_to(repo_root)}` — no sidecar hash file found (`falsify lock` writes one)")
         summary.append("")
 
     summary.append("---")
@@ -167,6 +170,11 @@ def main() -> int:
     if fail_tampered and tampered_count > 0:
         return 1
     if fail_falsified and falsified_count > 0:
+        return 1
+    if pass_count == 0:
+        # Manifests matched but none could be checked against a sidecar: a run
+        # that verified nothing must not pass.
+        print("::error::falsify-verify: no manifest was verified against a sidecar hash")
         return 1
     return 0
 

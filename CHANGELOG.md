@@ -14,6 +14,17 @@ numbers follow [Semantic Versioning](https://semver.org).
   reported as an error.
 - `examples/cyclonedx-attestation/validate.py` reads the manifest for the
   predicate check with the reference implementation.
+- `.github/actions/falsify-verify` finds the sidecar that `falsify lock` writes
+  (`name.prml.yaml` → `name.prml.prml.sha256`; the older `name.prml.sha256` is
+  still read), and a run that verifies no manifest now fails instead of passing.
+- `spec/COMPATIBILITY.md` lists, by date, the errata that rejected input the
+  implementations accepted before.
+- The schema page's Python example sends a User-Agent (the spec host refuses the
+  default Python-urllib one) and reads the manifest with the reference
+  implementation; `tools/acceptance_record.py` sends a User-Agent too.
+- The schema page's Node example loads the JSON Schema 2020-12 validator (the
+  default `ajv` import could not compile the schemas) and reads the manifest
+  with falsify-js `parseManifest`.
 
 ## [0.7.2] — 2026-11-25
 
