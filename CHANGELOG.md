@@ -6,6 +6,15 @@ numbers follow [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### Changed
+- `.github/actions/falsify-verify`: manifests are read, validated and hashed
+  with the reference implementation (`falsify_prml`, which the action already
+  installs) instead of a separate canonicalizer, so the action and
+  `falsify hash` agree on every file; a manifest the reference rejects is
+  reported as an error.
+- `examples/cyclonedx-attestation/validate.py` reads the manifest for the
+  predicate check with the reference implementation.
+
 ## [0.7.2] — 2026-11-25
 
 ### Changed (PRML v0.1 erratum 2026-11-25)

@@ -84,10 +84,11 @@ def check_prml(bom):
     else:
         print(f"prml: canonical hash matches ({h[:16]}…)")
 
-    # Predicate: observed value against the pre-registered bar.
-    import yaml
-    with open(manifest, encoding="utf-8") as f:
-        m = yaml.safe_load(f)
+    # Predicate: observed value against the pre-registered bar, with the manifest
+    # read by the reference implementation (the same reading as the hash above).
+    sys.path.insert(0, os.path.join(HERE, "..", ".."))
+    from falsify_prml import load_manifest
+    m = load_manifest(manifest)
     observed = float(props["prml:verify:observed"])
     thr = float(m["threshold"])
     cmp_ = m["comparator"]

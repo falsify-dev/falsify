@@ -14,34 +14,19 @@ Inputs come from environment variables:
   FAIL_TAMPERED   — 'true'/'false' — exit 1 on hash mismatch
   FAIL_FALSIFIED  — 'true'/'false' — exit 1 on claim FAIL
 
-This script does not import falsify; it independently recomputes the
-canonical bytes + SHA-256 to keep the action lightweight. The
-canonicalization is byte-equivalent to falsify._canonicalize.
+Manifests are read, validated and hashed with the reference implementation
+(falsify_prml, installed by action.yml), so this action and `falsify hash`
+agree on every file; a manifest the reference rejects is reported as an
+error, not hashed.
 """
 from __future__ import annotations
 
 import glob
-import hashlib
 import os
 import sys
 from pathlib import Path
 
-import yaml
-
-
-def canonicalize(spec) -> str:
-    """Reproduce falsify._canonicalize byte-for-byte."""
-    return yaml.safe_dump(
-        spec,
-        sort_keys=True,
-        default_flow_style=False,
-        allow_unicode=True,
-        width=4096,
-    )
-
-
-def sha256_hex(s: str) -> str:
-    return hashlib.sha256(s.encode("utf-8")).hexdigest()
+import falsify_prml
 
 
 def write_output(key: str, value) -> None:
@@ -97,19 +82,18 @@ def main() -> int:
             sidecar_path = manifest_path.parent / (manifest_path.stem + ".sha256")
 
         try:
-            spec = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-        except yaml.YAMLError as e:
-            print(f"::error file={rel}::Failed to parse YAML: {e}")
-            tampered.append((manifest_path, "<parse-error>", "<parse-error>"))
+            spec = falsify_prml.load_manifest(str(manifest_path))
+        except ValueError as e:
+            print(f"::error file={rel}::Manifest rejected: {e}")
+            tampered.append((manifest_path, "<rejected>", "<rejected>"))
+            continue
+        errors = falsify_prml.validate_manifest(spec)
+        if errors:
+            print(f"::error file={rel}::Manifest rejected: {errors[0]}")
+            tampered.append((manifest_path, "<rejected>", "<rejected>"))
             continue
 
-        if not isinstance(spec, dict):
-            print(f"::error file={rel}::Top-level YAML must be a mapping")
-            tampered.append((manifest_path, "<not-a-mapping>", "<not-a-mapping>"))
-            continue
-
-        canonical = canonicalize(spec)
-        recomputed = sha256_hex(canonical)
+        recomputed = falsify_prml.manifest_hash(spec)
 
         if not sidecar_path.exists():
             print(f"::warning file={rel}::No sidecar hash found at {sidecar_path.name}; "
